@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">EnglishWordsLearning</string>
+    <string name="learn">Learn</string>
+    <string name="create">Create dictionary</string>
+    <string name="settings">Settings</string>
+    <string name="enter_english_word">Enter english word:</string>
+    <string name="enter_russian_word">Enter russian word:</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="target_word">word</string>
+</resources>

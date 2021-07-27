@@ -1,0 +1,84 @@
+
+
+
+
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+
+<ListView
+    android:id="@+id/list_of_words"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    app:layout_constraintTop_toTopOf="parent"
+    >
+</ListView>
+
+
+
+
+<TextView
+    android:id="@+id/textView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/enter_english_word"
+    android:textSize="20sp"
+    app:layout_constraintTop_toBottomOf="@+id/list_of_words"
+    tools:layout_editor_absoluteX="0dp" />
+
+<EditText
+    android:id="@+id/edit_text_english_word"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="textPersonName"
+    android:textSize="20sp"
+    app:layout_constraintTop_toBottomOf="@+id/textView"
+    tools:layout_editor_absoluteX="0dp" />
+
+<TextView
+    android:id="@+id/textView2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/enter_russian_word"
+    android:textSize="20sp"
+    app:layout_constraintTop_toBottomOf="@+id/edit_text_english_word"
+    tools:layout_editor_absoluteX="0dp" />
+
+<EditText
+    android:id="@+id/edit_text_russian_word"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="textPersonName"
+    android:textSize="20sp"
+    app:layout_constraintTop_toBottomOf="@+id/textView2"
+    tools:layout_editor_absoluteX="16dp" />
+
+<Button
+    android:id="@+id/button_for_delete_word"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:text="@string/delete"
+    android:textSize="20sp"
+    app:layout_constraintTop_toBottomOf="@+id/edit_text_russian_word"
+    tools:layout_editor_absoluteX="0dp" />
+
+<Button
+    android:id="@+id/button_for_save_word"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginHorizontal="40sp"
+    android:text="@string/save"
+    android:textSize="20sp"
+    app:layout_constraintTop_toBottomOf="@+id/edit_text_russian_word"
+    tools:layout_editor_absoluteX="283dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
