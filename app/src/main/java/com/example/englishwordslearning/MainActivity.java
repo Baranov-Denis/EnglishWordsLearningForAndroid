@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.example.englishwordslearning.database.WordsDataBase;
+import com.example.englishwordslearning.logik.MainInterface;
 import com.example.englishwordslearning.logik.ProcessOfLearning;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,9 +22,11 @@ public class MainActivity extends AppCompatActivity {
         //Подключение кнопок
         setOnClickButtons();
         //Загружаем базу данных
-        new WordsDataBase(this);
-        //Создание Process of learning
-        ProcessOfLearning.getProcessOfLearning();
+         WordsDataBase.getWordsDataBase(this);
+
+        //Создает экземпляр MainInterface
+        MainInterface.getMainInterface(this);
+
     }
 
     public void setOnClickButtons() {

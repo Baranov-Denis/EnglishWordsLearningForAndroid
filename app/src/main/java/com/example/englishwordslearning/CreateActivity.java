@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -17,12 +18,11 @@ import android.widget.Toast;
 import com.example.englishwordslearning.database.WordsDataBase;
 import com.example.englishwordslearning.logik.MainInterface;
 import com.example.englishwordslearning.logik.ProcessOfLearning;
+import com.example.englishwordslearning.logik.WordCard;
 
 public class CreateActivity extends AppCompatActivity {
 
-    private SQLiteDatabase database;
-    private Cursor wordCursor;
-    private SimpleCursorAdapter cursorAdapter;
+
 
     private MainInterface mainInterface;
     //Идентификационный номер слова из общего списка слов после нажатия на него в списке
@@ -42,7 +42,7 @@ public class CreateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create);
         //wordsDataBase = new WordsDataBase(this);
         mainInterface = MainInterface.getMainInterface(this);
-        database = mainInterface.getSQLiteDatabase();
+        // database = mainInterface.getSQLiteDatabase();
         createWordsList();
         setOnClickForButtons();
 
@@ -80,10 +80,10 @@ public class CreateActivity extends AppCompatActivity {
         //Тоже самое для русского слова
         EditText newRussianWord = (EditText) findViewById(R.id.edit_text_russian_word);
         String russian = newRussianWord.getText().toString();
-
+        System.out.println("__________________________-------------++++++++++++++++++++++++++++---------------______________________________");
         //Вызываем сохранение метода в базу данных
         mainInterface.addNewWord(newEnglishWord, russian);
-
+        System.out.println("__________________________----------------------------______________________________");
         // Этот код обновляет текущую activity без анимации
         finish();
         overridePendingTransition(0, 0);
@@ -105,19 +105,18 @@ public class CreateActivity extends AppCompatActivity {
      * // Метод для создания списка слов
      */
     private void createWordsList() {
-        ListView wordsList = (ListView) findViewById(R.id.list_of_words);
-        // SQLiteOpenHelper helper = new WordsDataBase(this);
-        try {
-            //database = helper.getReadableDatabase();
-            wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, null, null, null, null, "ENGLISH_WORD");
-            cursorAdapter = new SimpleCursorAdapter(this, R.layout.list, wordCursor,
-                    new String[]{"ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, new int[]{R.id.text1, R.id.text2, R.id.text3}, 0);
-            wordsList.setAdapter(cursorAdapter);
+        //Получаем ListView для размещения в нем списка
+        ListView wordsList = findViewById(R.id.list_of_words);
+        //Получаем базу данных
+        SQLiteDatabase database = mainInterface.getSQLiteDatabase();
+        //Создаём курсор который содержит _id слова, английское слово, русское слово и количество правильных ответов соответствующих этому слову
+        Cursor wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, null, null, null, null, "ENGLISH_WORD");
+        //Создаём адаптер для того чтобы вывести данные из курсора на экран
+        SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.list, wordCursor,
+                new String[]{"ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, new int[]{R.id.text1, R.id.text2, R.id.text3}, 0);
+        //Подключаем адаптер
+        wordsList.setAdapter(cursorAdapter);
 
-        } catch (SQLException e) {
-            Toast toast = Toast.makeText(this, "Error", Toast.LENGTH_LONG);
-            toast.show();
-        }
 
         AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override
@@ -127,6 +126,7 @@ public class CreateActivity extends AppCompatActivity {
         };
 
         wordsList.setOnItemClickListener(listener);
+
     }
 
 

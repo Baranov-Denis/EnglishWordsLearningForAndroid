@@ -3,21 +3,14 @@ package com.example.englishwordslearning.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import com.example.englishwordslearning.logik.MainInterface;
+import com.example.englishwordslearning.logik.WordCard;
 
-import com.example.englishwordslearning.CreateActivity;
-import com.example.englishwordslearning.R;
-
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,15 +19,33 @@ public class WordsDataBase extends SQLiteOpenHelper {
     private static final String DB_NAME = "wordsLearning";
     private static final int DB_VERSION = 5;
     private static SQLiteDatabase database;
+   // private ArrayList<WordCard> allOfWordsOfDictionary;
+    private static WordsDataBase wordsDataBase;
+
+  //  public ArrayList<WordCard> getAllOfWordsOfDictionary() {
+  //      return allOfWordsOfDictionary;
+  //  }
 
     public static SQLiteDatabase getDatabase() {
         return database;
     }
 
-    public WordsDataBase(Context context) {
+    public static WordsDataBase getWordsDataBase(){
+        return wordsDataBase;
+    }
+
+    public static WordsDataBase getWordsDataBase(Context context){
+        if (wordsDataBase == null) {
+            wordsDataBase = new WordsDataBase(context);
+        }
+        return wordsDataBase;
+    }
+
+    private WordsDataBase(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         SQLiteOpenHelper liteOpenHelper = this;
         database = liteOpenHelper.getWritableDatabase();
+       // allOfWordsOfDictionary = loadDictionaryFromSQLiteDataBase();
     }
 
     @Override
@@ -89,7 +100,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
 
         Cursor englishCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "ENGLISH_WORD = ?", new String[]{englishWord}, null, null, null);
         boolean resultEnglish = englishCursor.getCount() > 0;
-        Cursor russianCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "ENGLISH_WORD = ?", new String[]{englishWord}, null, null, null);
+        Cursor russianCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "ENGLISH_WORD = ?", new String[]{russianWord}, null, null, null);
         boolean resultRussian = russianCursor.getCount() > 0;
         englishCursor.close();
         russianCursor.close();
@@ -132,6 +143,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
             //Запуск метода вставки в базу данных
             insertWord(database, correctedEnglishWord, correctedRussianWord, 0, 0,0,0);
         }
+      //  allOfWordsOfDictionary = loadDictionaryFromSQLiteDataBase();
     }
 
     /**Метод для удаления выделенного слова по id
@@ -140,6 +152,25 @@ public class WordsDataBase extends SQLiteOpenHelper {
      */
     public void deleteCurrentWord(long id) {
         deleteWord(database, id);
+    //    allOfWordsOfDictionary = loadDictionaryFromSQLiteDataBase();
+    }
+
+
+
+
+    /**
+     * Этот метод загружает всю информацию из базы данных и преобразует её в
+     * WordCard классы
+     * @return - HashSet обьектов типа WordCard со всеми словами из SQLiteDataBase
+     */
+    public ArrayList<WordCard> loadDictionaryFromSQLiteDataBase() {
+
+        ArrayList<WordCard> tempLibrary = new ArrayList<WordCard>();
+        Cursor wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED" }, null, null, null, null, "ENGLISH_WORD");
+        while (wordCursor.moveToNext()) {
+            tempLibrary.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
+        }
+        return tempLibrary;
     }
 
 }
