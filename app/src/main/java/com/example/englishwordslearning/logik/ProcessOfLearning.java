@@ -30,7 +30,7 @@ public class ProcessOfLearning {
 
     private ProcessOfLearning() {
         mySQLiteDatabase = WordsDataBase.getDatabase();
-        allOfWordsOfDictionary = createDictionaryFromSQLiteDataBase();
+       // allOfWordsOfDictionary = createDictionaryFromSQLiteDataBase();
     }
 
 
@@ -42,9 +42,9 @@ public class ProcessOfLearning {
     private ArrayList<WordCard> createDictionaryFromSQLiteDataBase() {
 
         ArrayList<WordCard> tempLibrary = new ArrayList<>();
-        Cursor wordCursor = mySQLiteDatabase.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "ANSWER_COUNT", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+        Cursor wordCursor = mySQLiteDatabase.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED" }, null, null, null, null, "ENGLISH_WORD");
             while (wordCursor.moveToNext()) {
-                tempLibrary.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4)));
+                tempLibrary.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
             }
             //Проверка массива
         for(WordCard x : tempLibrary) System.out.println(x);

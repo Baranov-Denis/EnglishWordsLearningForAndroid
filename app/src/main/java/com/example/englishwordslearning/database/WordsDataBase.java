@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 public class WordsDataBase extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "wordsLearning";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 5;
     private static SQLiteDatabase database;
 
     public static SQLiteDatabase getDatabase() {
@@ -43,14 +43,19 @@ public class WordsDataBase extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        upgradeMyDataBase(sqLiteDatabase,oldVersion,newVersion);
     }
 
     private void upgradeMyDataBase(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 1) {
-            db.execSQL("CREATE TABLE DICTIONARY (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, ANSWER_COUNT INTEGER, IS_LEARNED INTEGER);");
-            insertWord(db, "run", "бег", 0, 0);
-            insertWord(db, "wrap", "заворачивать", 0, 0);
+        if (oldVersion < 10) {
+            //db.execSQL("DROP TABLE DICTIONARY");
+            System.out.println("-------------------------------------------------------------------------------");
+            db.execSQL("CREATE TABLE DICTIONARY (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
+                    "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
+
+            insertWord(db, "run", "бег",  0,0,0,0);
+            insertWord(db, "wrap", "заворачивать", 0, 0,0,0);
         }
     }
 
@@ -59,12 +64,14 @@ public class WordsDataBase extends SQLiteOpenHelper {
      * Вставка слов в базу данных
      * /Вставляется английское слово , русское слово , количество сколько раз слово было угадано , и выучено слово или нет 1 или 0
      */
-    private void insertWord(SQLiteDatabase db, String englishWord, String russianWord, int answerCount, int isLearned) {
+    private void insertWord(SQLiteDatabase db, String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerStat, int nowLearning, int isLearned) {
         if (testExistingWord(db, englishWord, russianWord)) {
             ContentValues wordValue = new ContentValues();
             wordValue.put("ENGLISH_WORD", englishWord);
             wordValue.put("RUSSIAN_WORD", russianWord);
-            wordValue.put("ANSWER_COUNT", answerCount);
+            wordValue.put("RIGHT_ANSWER_COUNT", rightAnswerCount);
+            wordValue.put("WRONG_ANSWER_STAT", wrongAnswerStat);
+            wordValue.put("NOW_LEARNING", nowLearning);
             wordValue.put("IS_LEARNED", isLearned);
             db.insert("DICTIONARY", null, wordValue);
         }
@@ -123,7 +130,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
             String correctedEnglishWord = englishWord.toLowerCase();
             String correctedRussianWord = russianWord.toLowerCase();
             //Запуск метода вставки в базу данных
-            insertWord(database, correctedEnglishWord, correctedRussianWord, 0, 0);
+            insertWord(database, correctedEnglishWord, correctedRussianWord, 0, 0,0,0);
         }
     }
 

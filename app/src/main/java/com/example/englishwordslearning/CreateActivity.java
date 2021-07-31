@@ -109,9 +109,9 @@ public class CreateActivity extends AppCompatActivity {
         // SQLiteOpenHelper helper = new WordsDataBase(this);
         try {
             //database = helper.getReadableDatabase();
-            wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "ANSWER_COUNT"}, null, null, null, null, "ENGLISH_WORD");
+            wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, null, null, null, null, "ENGLISH_WORD");
             cursorAdapter = new SimpleCursorAdapter(this, R.layout.list, wordCursor,
-                    new String[]{"ENGLISH_WORD", "RUSSIAN_WORD", "ANSWER_COUNT"}, new int[]{R.id.text1, R.id.text2, R.id.text3}, 0);
+                    new String[]{"ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, new int[]{R.id.text1, R.id.text2, R.id.text3}, 0);
             wordsList.setAdapter(cursorAdapter);
 
         } catch (SQLException e) {
