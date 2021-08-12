@@ -138,19 +138,6 @@ public class ProcessOfLearning {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * ----------------------------- Learn Activity ------------------------------------------------
      */
@@ -185,7 +172,7 @@ public class ProcessOfLearning {
             if (wordsCount < allOfWordsOfDictionarySize) {
                 wordsCount++;
             } else {
-               tempArrayList.add(allOfWordsOfDictionary.get(0));
+                tempArrayList.add(allOfWordsOfDictionary.get(0));
                 System.out.println("ALARM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
         }
@@ -283,15 +270,11 @@ public class ProcessOfLearning {
     private ArrayList<WordCard> getRandomListForCreateButtons(ArrayList<WordCard> wordCards, int countOfButtons) {
         ArrayList<WordCard> learningWordsForButtons = new ArrayList<>();
         WordCard wordCard;
-        int wordCounter = 0;
+        System.out.println("          " + countOfButtons);
         while (learningWordsForButtons.size() < countOfButtons) {
             wordCard = wordCards.get((int) (Math.random() * wordCards.size()));
-            if(wordCounter < countOfButtons){
-            if(!learningWordsForButtons.contains(wordCard)) {
-                learningWordsForButtons.add(wordCard);
-            }
-            }else learningWordsForButtons.add(wordCards.get(0));
-            wordCounter++;
+            learningWordsForButtons.add(wordCard);
+            wordCards.remove(wordCard);
         }
         return learningWordsForButtons;
     }
@@ -332,7 +315,6 @@ public class ProcessOfLearning {
         }
         currentLearningWords = createCurrentLearningWordsArrayList();
     }
-
 
 
     private void reactionToTheWrongAnswer(WordCard wrongWordCard) {
