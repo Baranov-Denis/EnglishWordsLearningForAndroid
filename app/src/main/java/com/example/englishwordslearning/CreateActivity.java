@@ -52,6 +52,7 @@ public class CreateActivity extends AppCompatActivity {
     private void setOnClickForButtons() {
         Button saveButton = (Button) findViewById(R.id.button_for_save_word);
         Button deleteButton = (Button) findViewById(R.id.button_for_delete_word);
+        Button resetButton = findViewById(R.id.button_for_reset_all_progress);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,7 +66,15 @@ public class CreateActivity extends AppCompatActivity {
                 deleteWord(view);
             }
         });
+
+        resetButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                resetAllProgress();
+            }
+        });
     }
+
 
     /**
      * Запускаем сохранение слова
@@ -98,6 +107,11 @@ public class CreateActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
         startActivity(getIntent());
         overridePendingTransition(0, 0);
+    }
+
+    private void resetAllProgress(){
+        mainInterface.resetAllProgress();
+        createWordsList();
     }
 
 

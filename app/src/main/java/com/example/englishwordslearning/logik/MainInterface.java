@@ -39,7 +39,7 @@ public class MainInterface {
     private MainInterface(Context context) {
         wordsDataBase = WordsDataBase.getWordsDataBase(context);
         processOfLearning = ProcessOfLearning.getProcessOfLearning();
-        processOfLearning.setAllOfWordsOfDictionary(wordsDataBase.loadDictionaryFromSQLiteDataBase());
+      //  processOfLearning.setAllOfWordsOfDictionary(wordsDataBase.loadDictionaryFromSQLiteDataBase());
     }
 
     /**
@@ -74,6 +74,10 @@ public class MainInterface {
         processOfLearning.deleteCurrentWord(targetWord);
     }
 
+    public void resetAllProgress(){
+        processOfLearning.cleanAllProgress();
+    }
+
 
 
 
@@ -92,4 +96,5 @@ public class MainInterface {
     public  WordCard getWordThatNeedsToBeTranslated() {
         return processOfLearning.getWordThatNeedsToBeTranslated();
     }
+
 }
