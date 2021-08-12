@@ -42,7 +42,7 @@ public class ProcessOfLearning {
     /**
      * количество необходимых правильных ответов для того чтобы слово считалось выученным
      */
-    private int countOfRepeatWord = 1;
+    private int countOfRepeatWord = 19;
 
 
     /**

@@ -6,11 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.englishwordslearning.logik.MainInterface;
 import com.example.englishwordslearning.logik.WordCard;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +24,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
     //      return allOfWordsOfDictionary;
     //  }
 
-    public static SQLiteDatabase getDatabase() {
-        return database;
-    }
+
 
     public static WordsDataBase getWordsDataBase() {
         return wordsDataBase;
@@ -65,8 +61,8 @@ public class WordsDataBase extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE DICTIONARY (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
                     "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
 
-            insertWord(db, "run", "бег", 0, 0, 0, 0);
-            insertWord(db, "wrap", "заворачивать", 0, 0, 0, 0);
+            insertWord(db, "run", "бег");
+            insertWord(db, "wrap", "заворачивать");
         }
     }
 
@@ -75,15 +71,15 @@ public class WordsDataBase extends SQLiteOpenHelper {
      * Вставка слов в базу данных
      * /Вставляется английское слово , русское слово , количество сколько раз слово было угадано , и выучено слово или нет 1 или 0
      */
-    private void insertWord(SQLiteDatabase db, String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerStat, int nowLearning, int isLearned) {
+    private void insertWord(SQLiteDatabase db, String englishWord, String russianWord) {
         if (!testExistingWord(db, englishWord, russianWord)) {
             ContentValues wordValue = new ContentValues();
             wordValue.put("ENGLISH_WORD", englishWord);
             wordValue.put("RUSSIAN_WORD", russianWord);
-            wordValue.put("RIGHT_ANSWER_COUNT", rightAnswerCount);
-            wordValue.put("WRONG_ANSWER_STAT", wrongAnswerStat);
-            wordValue.put("NOW_LEARNING", nowLearning);
-            wordValue.put("IS_LEARNED", isLearned);
+            wordValue.put("RIGHT_ANSWER_COUNT", 0);
+            wordValue.put("WRONG_ANSWER_STAT", 0);
+            wordValue.put("NOW_LEARNING", 0);
+            wordValue.put("IS_LEARNED", 0);
             db.insert("DICTIONARY", null, wordValue);
         }
     }
@@ -124,17 +120,17 @@ public class WordsDataBase extends SQLiteOpenHelper {
         return resultEnglish && resultRussian;
     }
 
-    private boolean deleteWord(SQLiteDatabase db, long id) {
-        return db.delete("DICTIONARY", "_id = ?", new String[]{"" + id}) > 0;
+    private void deleteWord(SQLiteDatabase db, long id) {
+        db.delete("DICTIONARY", "_id = ?", new String[]{"" + id});
     }
 
 
     /**
      * Проверка на пустую строку и на то, чтобы английское слово было английским , а русское русским
      *
-     * @param englishWord
-     * @param russianWord
-     * @return
+     * @param englishWord англ слово
+     * @param russianWord русс слово
+     * @return если слова соответствуют всем требованиям, то возвращает true
      */
     private boolean testGettingWords(String englishWord, String russianWord) {
         Pattern englishPattern = Pattern.compile("[a-z]", Pattern.CASE_INSENSITIVE);
@@ -166,7 +162,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
             String correctedEnglishWord = englishWord.toLowerCase();
             String correctedRussianWord = russianWord.toLowerCase();
             //Запуск метода вставки в базу данных
-            insertWord(database, correctedEnglishWord, correctedRussianWord, 0, 0, 0, 0);
+            insertWord(database, correctedEnglishWord, correctedRussianWord);
         }
         //  allOfWordsOfDictionary = loadDictionaryFromSQLiteDataBase();
     }
