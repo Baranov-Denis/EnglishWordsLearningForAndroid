@@ -229,7 +229,7 @@ public class ProcessOfLearning {
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.button_layout);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
-        layoutParams.setMargins(15, 15, 15, 0); // left, top, right, bottom
+        layoutParams.setMargins(15, 0, 15, 30); // left, top, right, bottom
         ll.removeAllViews();
 
 
@@ -248,6 +248,8 @@ public class ProcessOfLearning {
             Button myButton = new Button(context);
             WordCard tempWordCardForButton = iterator.next();
             myButton.setText(tempWordCardForButton.getEnglishWord());
+            myButton.setTextSize(35);
+            myButton.setPadding(5,5,5,5);
             myButton.setOnClickListener(view2 -> {
                 //передаём WordCard который принадлежит нажатой кнопке для проверки
                 onClickButton(tempWordCardForButton, view, context);

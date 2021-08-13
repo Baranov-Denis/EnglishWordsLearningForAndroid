@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:text="@string/target_word"
             android:id="@+id/target_word"
-            android:textSize="35dp"
+            android:layout_gravity="center"
+            android:textSize="35sp"
             android:padding="20dp">
 
         </TextView>
