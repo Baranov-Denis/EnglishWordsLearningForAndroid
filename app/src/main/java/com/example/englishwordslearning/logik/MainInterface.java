@@ -67,13 +67,19 @@ public class MainInterface {
 
     /**
      * Метод удаляет карточку из базы данных
-     * и перезагружает HashSet содержащий все слова библиотеки
+     * и перезагружает ArrayList содержащий все слова библиотеки
      * @param targetWord id primary key карточки из таблицы
      */
     public void deleteCurrentWord(long targetWord) {
         processOfLearning.deleteCurrentWord(targetWord);
     }
 
+    
+    /**
+    * Метод сбрасывает весь прогресс обучения
+    * устанавливает 0 во все значения
+    * не трогает слова
+    */
     public void resetAllProgress(){
         processOfLearning.cleanAllProgress();
     }
