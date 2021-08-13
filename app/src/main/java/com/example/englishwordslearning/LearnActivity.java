@@ -28,7 +28,9 @@ public class LearnActivity extends AppCompatActivity {
 
         mainInterface.createButtonsForLearning(findViewById(R.id.learn_activity),this);
 
-        mainInterface.showWordForLearn(mainInterface.getWordThatNeedsToBeTranslated().getRussianWord() + " " +  mainInterface.getWordThatNeedsToBeTranslated().getRightAnswerCount(), findViewById(R.id.learn_activity));
+       // mainInterface.showWordForLearn(mainInterface.getWordThatNeedsToBeTranslated().getRussianWord()  + " " +  mainInterface.getWordThatNeedsToBeTranslated().getRightAnswerCount() , findViewById(R.id.learn_activity));
+        mainInterface.showWordForLearn(findViewById(R.id.learn_activity));
+
 
     }
 

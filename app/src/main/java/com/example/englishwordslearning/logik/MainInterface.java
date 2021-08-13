@@ -91,8 +91,8 @@ public class MainInterface {
      * ----------------------------------------- Learn Activity ------------------------------------
      */
 
-    public void showWordForLearn(String word , View view){
-        processOfLearning.showWord(word,view);
+    public void showWordForLearn(View view){
+        processOfLearning.showWord(view);
     }
 
     public void createButtonsForLearning( View view,Context context){

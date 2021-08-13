@@ -172,7 +172,7 @@ public class ProcessOfLearning {
             if (wordsCount < allOfWordsOfDictionarySize) {
                 wordsCount++;
             } else {
-                tempArrayList.add(allOfWordsOfDictionary.get(0));
+                tempArrayList.add(allOfWordsOfDictionary.get(random));
                 System.out.println("ALARM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
         }
@@ -202,6 +202,17 @@ public class ProcessOfLearning {
 
 
     /**
+     * Метод для установки изучаемого слова при первом построении страницы
+     * @param view
+     */
+    public void showWord(View view) {
+        TextView targetWord = view.findViewById(R.id.target_word);
+        String learnWord = wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1);
+        targetWord.setText(learnWord);
+    }
+
+
+    /**
      * @param word - слово которое нужно перевести
      */
     public void showWord(String word, View view) {
@@ -209,7 +220,7 @@ public class ProcessOfLearning {
         targetWord.setText(word);
     }
 
-    /**
+    /** НЕт
      * В настоящее время на кнопки попадают первые 10 слов из словаря.
      * Необходимо передавать в метод массив изучаемых слов для отображения их на кнопках и дальнейшей работы с ними
      */
@@ -226,19 +237,9 @@ public class ProcessOfLearning {
 
         currentLearningWords = createCurrentLearningWordsArrayList();
 
-        System.out.println(currentLearningWords.size() + " ---------------------------------------------->");
-        for (WordCard x : currentLearningWords) {
-            System.out.println(x.getEnglishWord() + " - " + x.getRightAnswerCount() + " ");
-        }
-        System.out.println(currentLearningWords.size() + " ---------------------------------------------->");
-        /**
-         *
-         * ***************************
-         *
-         */
         learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
 
-        getWordForLearn(learningWordsForButtons);
+        wordThatNeedsToBeTranslated = getWordForLearn(learningWordsForButtons);
 
         Iterator<WordCard> iterator = learningWordsForButtons.iterator();
 
@@ -255,7 +256,7 @@ public class ProcessOfLearning {
             ll.addView(myButton);
         }
 
-        showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount(), view);
+        showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1), view);
     }
 
 
@@ -291,7 +292,7 @@ public class ProcessOfLearning {
             createButtons(view, context);
         } else {
             reactionToTheWrongAnswer(wordThatNeedsToBeTranslated);
-            showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount(), view);
+            showWord( wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1), view);
         }
     }
 
@@ -333,17 +334,23 @@ public class ProcessOfLearning {
     }
 
 
+    /**
+     *
+     * @param learningWordsForButtons
+     * @return
+     */
     public WordCard getWordForLearn(ArrayList<WordCard> learningWordsForButtons) {
         int random = (int) (Math.random() * learningWordsForButtons.size());
-        int count = 0;
-        for (WordCard wordCard : learningWordsForButtons) {
+       // int count = 0;
+        return learningWordsForButtons.get(random);
+      /*  for (WordCard wordCard : learningWordsForButtons) {
             if (count == random) {
                 wordThatNeedsToBeTranslated = wordCard;
                 return wordCard;
             }
             count++;
         }
-        return null;
+        return null;*/
     }
 
 
