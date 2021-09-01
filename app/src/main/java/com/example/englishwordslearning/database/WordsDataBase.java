@@ -196,7 +196,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
         while (wordCursor.moveToNext()) {
             tempLibrary.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
         }
-        System.out.println("load base +++++++++++++++"+tempLibrary);
+       // System.out.println("load base +++++++++++++++"+tempLibrary);
         return tempLibrary;
     }
 
