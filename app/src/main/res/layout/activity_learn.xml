@@ -11,17 +11,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/target_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/target_word"
-            android:id="@+id/target_word"
             android:layout_gravity="center"
-            android:textSize="35sp"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:text="@string/target_word"
+            android:textSize="35sp">
 
         </TextView>
 

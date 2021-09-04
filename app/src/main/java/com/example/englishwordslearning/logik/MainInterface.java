@@ -61,8 +61,8 @@ public class MainInterface {
      * @param EnglishWord английское слово
      * @param russianWord русское слово
      */
-    public void addNewWord(String EnglishWord, String russianWord) {
-        processOfLearning.addNewWord(EnglishWord, russianWord);
+    public void addNewWord(String EnglishWord, String russianWord,View view) {
+        processOfLearning.addNewWord(EnglishWord, russianWord, view);
     }
 
     /**

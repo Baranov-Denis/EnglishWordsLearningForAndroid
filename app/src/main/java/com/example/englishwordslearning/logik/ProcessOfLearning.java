@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.englishwordslearning.R;
 import com.example.englishwordslearning.database.WordsDataBase;
@@ -107,8 +108,8 @@ public class ProcessOfLearning {
      * @param EnglishWord английское слово
      * @param russianWord русское слово
      */
-    public void addNewWord(String EnglishWord, String russianWord) {
-        wordsDataBase.addNewWord(EnglishWord, russianWord);
+    public void addNewWord(String EnglishWord, String russianWord,View view) {
+        wordsDataBase.addNewWord(EnglishWord, russianWord, view);
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
     }
 
@@ -137,6 +138,8 @@ public class ProcessOfLearning {
             wordsDataBase.changeExistsWord(wordCard);
         }
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
+        //Очищает словарь изучаемых слов. Иначе при изучении будут загружены не сброшенные данные.
+        currentLearningWords = null;
     }
 
 
@@ -241,7 +244,15 @@ public class ProcessOfLearning {
 
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
 
+        for(WordCard x : allOfWordsOfDictionary) {
+            Log.i(TAG, "before create buttons----> " + x.getEnglishWord() + "   " + x.getRightAnswerCount());
+        }
+
         currentLearningWords = createCurrentLearningWordsArrayList();
+
+        for(WordCard x : currentLearningWords) {
+            Log.i(TAG, "before create buttons currentLearningWords----> " + x.getEnglishWord() + "   " + x.getRightAnswerCount());
+        }
 
 
         learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
@@ -254,6 +265,7 @@ public class ProcessOfLearning {
         for (int i = 0; i < countOfButtons; i++) {
             Button myButton = new Button(context);
             WordCard tempWordCardForButton = iterator.next();
+            Log.i(TAG, "------------------ " + tempWordCardForButton.getEnglishWord() +" " + tempWordCardForButton.getRightAnswerCount());
             myButton.setText(tempWordCardForButton.getEnglishWord());
             myButton.setTextSize(35);
             myButton.setPadding(5, 5, 5, 5);
@@ -314,6 +326,10 @@ public class ProcessOfLearning {
      * @param rightWordCard
      */
     private void reactionToTheRightAnswer(WordCard rightWordCard) {
+        Log.i(TAG,"->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        Log.i(TAG,"ShowWord ---> " + rightWordCard.getEnglishWord() +" " + rightWordCard.getRightAnswerCount());
+        Log.i(TAG,"->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
         if (rightWordCard.getRightAnswerCount() < countOfRepeatWord) {
             rightWordCard.setRightAnswerCount(rightWordCard.getRightAnswerCount() + 1);
             wordsDataBase.changeExistsWord(rightWordCard);

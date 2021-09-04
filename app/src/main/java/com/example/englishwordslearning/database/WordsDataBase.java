@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.view.View;
+import android.widget.Toast;
 
 import com.example.englishwordslearning.logik.WordCard;
 
@@ -82,6 +84,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
             wordValue.put("IS_LEARNED", 0);
             db.insert("DICTIONARY", null, wordValue);
         }
+
     }
 
     private void changeWord(SQLiteDatabase db, String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerStat, int nowLearning, int isLearned) {
@@ -155,7 +158,7 @@ public class WordsDataBase extends SQLiteOpenHelper {
      * @param englishWord
      * @param russianWord
      */
-    public void addNewWord(String englishWord, String russianWord) {
+    public void addNewWord(String englishWord, String russianWord, View view) {
 
         if (testGettingWords(englishWord, russianWord)) {
             //Приведение строк к нижнему регистру
@@ -163,12 +166,16 @@ public class WordsDataBase extends SQLiteOpenHelper {
             String correctedRussianWord = russianWord.toLowerCase();
             //Запуск метода вставки в базу данных
             insertWord(database, correctedEnglishWord, correctedRussianWord);
+            Toast toast = Toast.makeText(view.getContext(), "Word added", Toast.LENGTH_SHORT);
+            toast.show();
+        }else {
+            Toast toast = Toast.makeText(view.getContext(), "Word did not added!", Toast.LENGTH_LONG);
+            toast.show();
         }
         //  allOfWordsOfDictionary = loadDictionaryFromSQLiteDataBase();
     }
 
     public void changeExistsWord(WordCard wordCard){
-
         changeWord(database,wordCard.getEnglishWord(), wordCard.getRussianWord(), wordCard.getRightAnswerCount(), wordCard.getWrongAnswerCount(), wordCard.nowLearning(), wordCard.isLearned());
     }
 

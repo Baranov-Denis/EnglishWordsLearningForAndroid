@@ -91,7 +91,7 @@ public class CreateActivity extends AppCompatActivity {
         String russian = newRussianWord.getText().toString();
         System.out.println("__________________________-------------++++++++++++++++++++++++++++---------------______________________________");
         //Вызываем сохранение метода в базу данных
-        mainInterface.addNewWord(newEnglishWord, russian);
+        mainInterface.addNewWord(newEnglishWord, russian,view);
         System.out.println("__________________________----------------------------______________________________");
         // Этот код обновляет текущую activity без анимации
         finish();
