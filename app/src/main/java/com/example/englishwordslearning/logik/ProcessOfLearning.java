@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.englishwordslearning.R;
 import com.example.englishwordslearning.database.WordsDataBase;
@@ -29,6 +28,12 @@ public class ProcessOfLearning {
      * HashSet содержащий изучаемые слова выбранные для кнопок
      */
     private ArrayList<WordCard> learningWordsForButtons;
+
+    /**
+     * Переменная для отслеживания правильного ответа
+     * используется при создании кнопок
+     */
+    private boolean answeredTrue = true;
 
 
     /**
@@ -76,7 +81,7 @@ public class ProcessOfLearning {
         wordsDataBase = WordsDataBase.getWordsDataBase();
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
         // cleanAllProgress();
-       // currentLearningWords = createCurrentLearningWordsArrayList();
+        // currentLearningWords = createCurrentLearningWordsArrayList();
 
         //  System.out.println(currentLearningWords.size() + " ---------------------------------------------->");
       /*  for (WordCard x : currentLearningWords) {
@@ -108,7 +113,7 @@ public class ProcessOfLearning {
      * @param EnglishWord английское слово
      * @param russianWord русское слово
      */
-    public void addNewWord(String EnglishWord, String russianWord,View view) {
+    public void addNewWord(String EnglishWord, String russianWord, View view) {
         wordsDataBase.addNewWord(EnglishWord, russianWord, view);
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
     }
@@ -163,6 +168,7 @@ public class ProcessOfLearning {
             tempArrayList = new ArrayList<>(currentLearningWords);
         } else {
             tempArrayList = createLearningListFirstStep();
+            answeredTrue = true;
         }
 
         int wordsCount = 0;
@@ -200,7 +206,7 @@ public class ProcessOfLearning {
         ArrayList<WordCard> tempArrayList = new ArrayList<>();
         if (currentLearningWords == null) {
             for (WordCard wordCard : allOfWordsOfDictionary) {
-                if (wordCard.nowLearning() > 0)  tempArrayList.add(wordCard);
+                if (wordCard.nowLearning() > 0) tempArrayList.add(wordCard);
                 if (tempArrayList.size() == countOfCurrentLearningWords) break;
             }
         }
@@ -238,26 +244,20 @@ public class ProcessOfLearning {
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.button_layout);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
-        layoutParams.setMargins(15, 0, 15, 30); // left, top, right, bottom
+        layoutParams.setMargins(15, 0, 15, 30);
         ll.removeAllViews();
 
 
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
 
-        for(WordCard x : allOfWordsOfDictionary) {
-            Log.i(TAG, "before create buttons----> " + x.getEnglishWord() + "   " + x.getRightAnswerCount());
-        }
 
         currentLearningWords = createCurrentLearningWordsArrayList();
 
-        for(WordCard x : currentLearningWords) {
-            Log.i(TAG, "before create buttons currentLearningWords----> " + x.getEnglishWord() + "   " + x.getRightAnswerCount());
+
+        if (answeredTrue) {
+            learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
+            wordThatNeedsToBeTranslated = getWordForLearn(learningWordsForButtons);
         }
-
-
-        learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
-
-        wordThatNeedsToBeTranslated = getWordForLearn(learningWordsForButtons);
 
         Iterator<WordCard> iterator = learningWordsForButtons.iterator();
 
@@ -265,10 +265,16 @@ public class ProcessOfLearning {
         for (int i = 0; i < countOfButtons; i++) {
             Button myButton = new Button(context);
             WordCard tempWordCardForButton = iterator.next();
-            Log.i(TAG, "------------------ " + tempWordCardForButton.getEnglishWord() +" " + tempWordCardForButton.getRightAnswerCount());
             myButton.setText(tempWordCardForButton.getEnglishWord());
             myButton.setTextSize(35);
             myButton.setPadding(5, 5, 5, 5);
+            if(!answeredTrue){
+                myButton.setBackgroundColor(context.getResources().getColor(R.color.red));
+            }
+            if (tempWordCardForButton.getEnglishWord().equals(wordThatNeedsToBeTranslated.getEnglishWord()) && tempWordCardForButton.getRightAnswerCount() == 0) {
+                myButton.setBackgroundColor(context.getResources().getColor(R.color.green));
+            }
+
             myButton.setOnClickListener(view2 -> {
                 //передаём WordCard который принадлежит нажатой кнопке для проверки
                 onClickButton(tempWordCardForButton, view, context);
@@ -295,11 +301,11 @@ public class ProcessOfLearning {
         Log.i(TAG, " --->>> before creating buttons " + currentLearningWords.toString());
         while (learningWordsForButtons.size() < countOfButtons) {
             wordCard = wordCards.get((int) (Math.random() * wordCards.size()));
-            if(!learningWordsForButtons.contains(wordCard))   learningWordsForButtons.add(wordCard);
+            if (!learningWordsForButtons.contains(wordCard)) learningWordsForButtons.add(wordCard);
 
             //Log.i(TAG," After right answer 1 " + currentLearningWords.toString());
             //currentLearningWords.add(wordCard);
-           // wordCards.remove(wordCard);
+            // wordCards.remove(wordCard);
         }
         Log.i(TAG, " --->>> After created buttons " + currentLearningWords.toString());
         return learningWordsForButtons;
@@ -315,7 +321,7 @@ public class ProcessOfLearning {
             reactionToTheRightAnswer(wordCard);
             createButtons(view, context);
         } else {
-            reactionToTheWrongAnswer(wordThatNeedsToBeTranslated);
+            reactionToTheWrongAnswer(wordThatNeedsToBeTranslated, view, context);
             showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1), view);
         }
     }
@@ -326,9 +332,6 @@ public class ProcessOfLearning {
      * @param rightWordCard
      */
     private void reactionToTheRightAnswer(WordCard rightWordCard) {
-        Log.i(TAG,"->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        Log.i(TAG,"ShowWord ---> " + rightWordCard.getEnglishWord() +" " + rightWordCard.getRightAnswerCount());
-        Log.i(TAG,"->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
         if (rightWordCard.getRightAnswerCount() < countOfRepeatWord) {
             rightWordCard.setRightAnswerCount(rightWordCard.getRightAnswerCount() + 1);
@@ -342,17 +345,19 @@ public class ProcessOfLearning {
             currentLearningWords.remove(rightWordCard);
             reWriteWordCardInArrayList(allOfWordsOfDictionary, rightWordCard);
         }
-
+        answeredTrue = true;
         // currentLearningWords = createCurrentLearningWordsArrayList();
     }
 
 
-    private void reactionToTheWrongAnswer(WordCard wrongWordCard) {
+    private void reactionToTheWrongAnswer(WordCard wrongWordCard, View view, Context context) {
         wrongWordCard.setRightAnswerCount(0);
         // System.out.println(wrongWordCard.getEnglishWord() + " " + wrongWordCard.getWrongAnswerCount());
         wrongWordCard.setWrongAnswerCount(wrongWordCard.getWrongAnswerCount() + 1);
         wordsDataBase.changeExistsWord(wrongWordCard);
         reWriteWordCardInArrayList(allOfWordsOfDictionary, wrongWordCard);
+        answeredTrue = false;
+        createButtons(view, context);
         // currentLearningWords = createCurrentLearningWordsArrayList();
     }
 
