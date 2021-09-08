@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.englishwordslearning.MainActivity;
 import com.example.englishwordslearning.R;
 import com.example.englishwordslearning.database.WordsDataBase;
 
@@ -25,25 +26,33 @@ public class ProcessOfLearning {
     private ArrayList<WordCard> allOfWordsOfDictionary;
 
     /**
-     * HashSet содержащий изучаемые слова выбранные для кнопок
-     */
-    private ArrayList<WordCard> learningWordsForButtons;
-
-    /**
-     * Переменная для отслеживания правильного ответа
-     * используется при создании кнопок
-     */
-    private boolean answeredTrue = true;
-
-
-    /**
      * ArrayList в котором содержатся слова, которые изучаются в настоящее время
      * количество слов в этом списке определяется переменной countOfCurrentLearningWords
+     * из этого списка выбираются слова для кнопок
      */
     private ArrayList<WordCard> currentLearningWords;
 
     /**
-     * количество слов в списке изучаемых слов
+     * HashSet содержащий изучаемые слова выбранные для кнопок
+     */
+    private ArrayList<WordCard> learningWordsForButtons;
+
+
+
+    /**
+     * Переменная для отслеживания правильного ответа
+     * используется при создании кнопок
+     * в случае когда дан неправильный ответ answeredTrue
+     * будет присвоено значение false после чего
+     * при создании кнопок не будут обновлены надписи на них
+     * а вместо этого кнопки изменят цвет
+     */
+    private boolean answeredTrue = true;
+
+
+
+    /**
+     * Количество слов в списке изучаемых слов
      */
     private int countOfCurrentLearningWords = 10;
 
@@ -54,7 +63,7 @@ public class ProcessOfLearning {
 
 
     /**
-     * слово которое показывается вверху страницы которое нужно перевести
+     * Слово которое показывается вверху страницы которое нужно перевести
      */
     private WordCard wordThatNeedsToBeTranslated;
 
@@ -64,6 +73,14 @@ public class ProcessOfLearning {
      */
     int countOfButtons = 10;
 
+
+    public void setCountOfRepeatWord(int countOfRepeatWord) {
+        this.countOfRepeatWord = countOfRepeatWord;
+    }
+
+    public int getCountOfRepeatWord() {
+        return countOfRepeatWord;
+    }
 
     public WordCard getWordThatNeedsToBeTranslated() {
         return wordThatNeedsToBeTranslated;
@@ -80,35 +97,32 @@ public class ProcessOfLearning {
     private ProcessOfLearning() {
         wordsDataBase = WordsDataBase.getWordsDataBase();
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
-        // cleanAllProgress();
-        // currentLearningWords = createCurrentLearningWordsArrayList();
-
-        //  System.out.println(currentLearningWords.size() + " ---------------------------------------------->");
-      /*  for (WordCard x : currentLearningWords) {
-            System.out.println(x.getEnglishWord() + " - " + x.getRightAnswerCount() + " ");
-        }
-        System.out.println(currentLearningWords.size() + " ---------------------------------------------->");*/
     }
 
     public void setAllOfWordsOfDictionary(ArrayList<WordCard> allOfWordsOfDictionary) {
         this.allOfWordsOfDictionary = allOfWordsOfDictionary;
     }
 
-    /**
-     * ----------------------------- Create Activity -----------------------------------------------
-     */
 
     /**
-     *
+     *Данный метод заполняет карточками основной массив содержащий все слова
      */
     public void loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary() {
         allOfWordsOfDictionary = wordsDataBase.loadDictionaryFromSQLiteDataBase();
     }
 
     /**
+     * ----------------------------- Create Activity -----------------------------------------------
+     */
+
+
+
+    /**
      * Метод добавляет карточку в базу данных
      * с нулевыми показателями всех полей
      * и перезагружает ArrayList содержащий все слова библиотеки
+     *
+     * Используется для начальной загрузки слов
      *
      * @param EnglishWord английское слово
      * @param russianWord русское слово
@@ -131,8 +145,10 @@ public class ProcessOfLearning {
 
 
     /**
-     * сбрасывает весь прогресс переписывает количество правильных и неправильных ответов
-     * слово не изучено и не изучается
+     * Метод сбрасывает весь прогресс переписывает количество правильных и неправильных ответов
+     * устанавливает все поля равными нулю
+     *
+     * Присваивает словарю изучаемых слов currentLearningWords значение null
      */
     public void cleanAllProgress() {
         for (WordCard wordCard : allOfWordsOfDictionary) {
@@ -164,6 +180,10 @@ public class ProcessOfLearning {
         int random;
         int allOfWordsOfDictionarySize = allOfWordsOfDictionary.size();
 
+        //Проверка существования словаря изучаемых слов
+        //Если словарь изучаемых слов уже существует то он будет скопирован
+        //во временный словарь
+        // Иначе будет запущено создание нового словаря
         if (currentLearningWords != null) {
             tempArrayList = new ArrayList<>(currentLearningWords);
         } else {
@@ -200,7 +220,7 @@ public class ProcessOfLearning {
      * Если не существует, то пробует загрузить его из списка всех существующих слов
      * для этого проверяется nowLearning если > 0 то добавляется в словарь изучаемых слов
      *
-     * @return
+     * @return Array List с карточками
      */
     private ArrayList<WordCard> createLearningListFirstStep() {
         ArrayList<WordCard> tempArrayList = new ArrayList<>();
@@ -227,6 +247,7 @@ public class ProcessOfLearning {
 
 
     /**
+     *
      * @param word - слово которое нужно перевести
      */
     public void showWord(String word, View view) {

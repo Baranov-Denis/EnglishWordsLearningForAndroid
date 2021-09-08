@@ -9,4 +9,5 @@
     <string name="delete">Delete</string>
     <string name="reset">Reset</string>
     <string name="target_word">word</string>
+    <string name="choose_count_of_learning_words">Set count</string>
 </resources>

@@ -2,6 +2,7 @@ package com.example.englishwordslearning.logik;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.View;
 
 import com.example.englishwordslearning.database.WordsDataBase;
@@ -25,6 +26,7 @@ public class MainInterface {
         if (mainInterface == null) {
             mainInterface = new MainInterface(context);
         }
+        Log.i("ghkttttttttt","eeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllllllllllllllllllllllllllllll;;;;;;;;;;;;;;;;;;;;;;;llllllllllllllleee   " + mainInterface);
         return mainInterface;
     }
 
@@ -37,8 +39,10 @@ public class MainInterface {
      * @param context
      */
     private MainInterface(Context context) {
+
         wordsDataBase = WordsDataBase.getWordsDataBase(context);
         processOfLearning = ProcessOfLearning.getProcessOfLearning();
+
       //  processOfLearning.setAllOfWordsOfDictionary(wordsDataBase.loadDictionaryFromSQLiteDataBase());
     }
 
@@ -103,4 +107,11 @@ public class MainInterface {
         return processOfLearning.getWordThatNeedsToBeTranslated();
     }
 
+    public int getCountOfRepeatWord() {
+        return processOfLearning.getCountOfRepeatWord();
+    }
+
+    public void setCountOfRepeatWord(int count) {
+        processOfLearning.setCountOfRepeatWord(count);
+    }
 }
