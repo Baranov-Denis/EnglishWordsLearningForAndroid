@@ -26,6 +26,8 @@ public class LearnActivity extends AppCompatActivity {
 
         mainInterface = MainInterface.getMainInterface(this);
 
+      //  mainInterface.startLearning(this);
+
         mainInterface.createButtonsForLearning(findViewById(R.id.learn_activity),this);
 
         mainInterface.showWordForLearn(findViewById(R.id.learn_activity));

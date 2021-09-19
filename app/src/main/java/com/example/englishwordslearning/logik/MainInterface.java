@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.View;
 
+import com.example.englishwordslearning.LearnActivity;
 import com.example.englishwordslearning.database.WordsDataBase;
 
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ public class MainInterface {
         if (mainInterface == null) {
             mainInterface = new MainInterface(context);
         }
-        Log.i("ghkttttttttt","eeeeeeeeeeeeeeeeeeeeeeeeeeeeeellllllllllllllllllllllllllllllll;;;;;;;;;;;;;;;;;;;;;;;llllllllllllllleee   " + mainInterface);
         return mainInterface;
     }
 
@@ -113,5 +113,8 @@ public class MainInterface {
 
     public void setCountOfRepeatWord(int count) {
         processOfLearning.setCountOfRepeatWord(count);
+    }
+
+    public void startLearning(Context context) {
     }
 }

@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.englishwordslearning.MainActivity;
 import com.example.englishwordslearning.R;
 import com.example.englishwordslearning.database.WordsDataBase;
 
@@ -38,7 +38,6 @@ public class ProcessOfLearning {
     private ArrayList<WordCard> learningWordsForButtons;
 
 
-
     /**
      * Переменная для отслеживания правильного ответа
      * используется при создании кнопок
@@ -48,7 +47,6 @@ public class ProcessOfLearning {
      * а вместо этого кнопки изменят цвет
      */
     private boolean answeredTrue = true;
-
 
 
     /**
@@ -105,7 +103,7 @@ public class ProcessOfLearning {
 
 
     /**
-     *Данный метод заполняет карточками основной массив содержащий все слова
+     * Данный метод заполняет карточками основной массив содержащий все слова
      */
     public void loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary() {
         allOfWordsOfDictionary = wordsDataBase.loadDictionaryFromSQLiteDataBase();
@@ -116,12 +114,11 @@ public class ProcessOfLearning {
      */
 
 
-
     /**
      * Метод добавляет карточку в базу данных
      * с нулевыми показателями всех полей
      * и перезагружает ArrayList содержащий все слова библиотеки
-     *
+     * <p>
      * Используется для начальной загрузки слов
      *
      * @param EnglishWord английское слово
@@ -147,7 +144,7 @@ public class ProcessOfLearning {
     /**
      * Метод сбрасывает весь прогресс переписывает количество правильных и неправильных ответов
      * устанавливает все поля равными нулю
-     *
+     * <p>
      * Присваивает словарю изучаемых слов currentLearningWords значение null
      */
     public void cleanAllProgress() {
@@ -168,18 +165,8 @@ public class ProcessOfLearning {
      * ----------------------------- Learn Activity ------------------------------------------------
      */
 
-    /**
-     * Создаёт список изучаемых слов
-     *
-     * @return ArrayList со списком изучаемых слов помеченных как nowLearning > 0
-     */
-    private ArrayList<WordCard> createCurrentLearningWordsArrayList() {
 
-        ArrayList<WordCard> tempArrayList;
-        WordCard randomCard;
-        int random;
-        int allOfWordsOfDictionarySize = allOfWordsOfDictionary.size();
-
+    private ArrayList<WordCard> repeatCreatingArray(ArrayList<WordCard> tempArrayList) {
         //Проверка существования словаря изучаемых слов
         //Если словарь изучаемых слов уже существует то он будет скопирован
         //во временный словарь
@@ -187,31 +174,75 @@ public class ProcessOfLearning {
         if (currentLearningWords != null) {
             tempArrayList = new ArrayList<>(currentLearningWords);
         } else {
-            tempArrayList = createLearningListFirstStep();
+            tempArrayList = createLearningListFromMainDictionary();
             answeredTrue = true;
         }
+        return tempArrayList;
+    }
 
-        int wordsCount = 0;
 
+    /**
+     * Создаёт список изучаемых слов
+     *
+     * @return ArrayList со списком изучаемых слов помеченных как nowLearning > 0
+     */
+    private ArrayList<WordCard> createCurrentLearningWordsArrayList(Context context) {
+
+        ArrayList<WordCard> tempArrayList = new ArrayList<>();
+        //Массив для проверки того, сколько слов уже перебрали
+        //Нужен для того, чтобы начать добавлять повторные слова, когда словарь заканчивается
+        ArrayList<WordCard> checkedWordCards = new ArrayList<>();
+        WordCard randomCard;
+
+
+        tempArrayList = repeatCreatingArray(tempArrayList);
+
+
+        //Выполняется пока не набрано заданное количество слов во временном списке
         while (tempArrayList.size() < countOfCurrentLearningWords) {
 
-            random = (int) (Math.random() * allOfWordsOfDictionarySize);
-            randomCard = allOfWordsOfDictionary.get(random);
+            randomCard = getRandomWordCardFromMainDictionary();
 
+            if (!checkedWordCards.contains(randomCard)) {
+                checkedWordCards.add(randomCard);
+            }
+
+
+            //Проверяем содержится ли случайная карточка во временном списке
+            //Проверяем есть ли у карточки слова отметка о том, что оно выучено
+            //Если карточка не была добавлена ранее и не была выучена, то она будет добавлена во временный список, а после в список изучаемых слов
             if (!tempArrayList.contains(randomCard) && randomCard.isLearned() == 0) {
+                //Присваиваем карточке слова отметку о том, что оно изучается в настоящее время
                 randomCard.setNowLearning(1);
+                //Добавляем карточку слова во временный список
                 tempArrayList.add(randomCard);
+                //Перезаписываем данные о карточке в базе данных
                 wordsDataBase.changeExistsWord(randomCard);
             }
-            if (wordsCount < allOfWordsOfDictionarySize) {
-                wordsCount++;
-            } else {
-                tempArrayList.add(allOfWordsOfDictionary.get(random));
-                System.out.println("ALARM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            }
-        }
 
+            //Если временный список ещё не заполнен, а список для проверки полон, то
+            //во временный список будет добавлено случайное слово
+            if (checkedWordCards.size() >= allOfWordsOfDictionary.size()) {
+                Toast toast = Toast.makeText(context, "СЛОВА ЗАКАНЧИВАЮТСЯ!!!", Toast.LENGTH_LONG);
+                toast.show();
+                int check = 0;
+                while (check == 0) {
+                    randomCard = getRandomWordCardFromMainDictionary();
+                    if (!tempArrayList.contains(randomCard)) {
+                        tempArrayList.add(randomCard);
+                        check++;
+                    }
+                }
+            }
+
+        }
         return tempArrayList;
+    }
+
+    private WordCard getRandomWordCardFromMainDictionary(){
+        int random;
+        random = (int) (Math.random() * allOfWordsOfDictionary.size());
+        return allOfWordsOfDictionary.get(random);
     }
 
 
@@ -222,14 +253,14 @@ public class ProcessOfLearning {
      *
      * @return Array List с карточками
      */
-    private ArrayList<WordCard> createLearningListFirstStep() {
+    private ArrayList<WordCard> createLearningListFromMainDictionary() {
         ArrayList<WordCard> tempArrayList = new ArrayList<>();
-        if (currentLearningWords == null) {
-            for (WordCard wordCard : allOfWordsOfDictionary) {
-                if (wordCard.nowLearning() > 0) tempArrayList.add(wordCard);
-                if (tempArrayList.size() == countOfCurrentLearningWords) break;
-            }
+        //if (currentLearningWords == null) {
+        for (WordCard wordCard : allOfWordsOfDictionary) {
+            if (wordCard.nowLearning() > 0) tempArrayList.add(wordCard);
+            if (tempArrayList.size() == countOfCurrentLearningWords) break;
         }
+        // }
         return tempArrayList;
     }
 
@@ -247,7 +278,6 @@ public class ProcessOfLearning {
 
 
     /**
-     *
      * @param word - слово которое нужно перевести
      */
     public void showWord(String word, View view) {
@@ -272,13 +302,18 @@ public class ProcessOfLearning {
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
 
 
-        currentLearningWords = createCurrentLearningWordsArrayList();
+        currentLearningWords = createCurrentLearningWordsArrayList(context);
+
+        Log.i(TAG, "after creating");
 
 
         if (answeredTrue) {
+
             learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
+            Log.i(TAG, "More point");
             wordThatNeedsToBeTranslated = getWordForLearn(learningWordsForButtons);
         }
+
 
         Iterator<WordCard> iterator = learningWordsForButtons.iterator();
 
@@ -289,7 +324,7 @@ public class ProcessOfLearning {
             myButton.setText(tempWordCardForButton.getEnglishWord());
             myButton.setTextSize(35);
             myButton.setPadding(5, 5, 5, 5);
-            if(!answeredTrue){
+            if (!answeredTrue) {
                 myButton.setBackgroundColor(context.getResources().getColor(R.color.red));
             }
             if (tempWordCardForButton.getEnglishWord().equals(wordThatNeedsToBeTranslated.getEnglishWord()) && tempWordCardForButton.getRightAnswerCount() == 0) {
@@ -319,16 +354,25 @@ public class ProcessOfLearning {
 
         ArrayList<WordCard> learningWordsForButtons = new ArrayList<>();
         WordCard wordCard;
-        Log.i(TAG, " --->>> before creating buttons " + currentLearningWords.toString());
-        while (learningWordsForButtons.size() < countOfButtons) {
-            wordCard = wordCards.get((int) (Math.random() * wordCards.size()));
-            if (!learningWordsForButtons.contains(wordCard)) learningWordsForButtons.add(wordCard);
+        int random = 0;
 
-            //Log.i(TAG," After right answer 1 " + currentLearningWords.toString());
-            //currentLearningWords.add(wordCard);
-            // wordCards.remove(wordCard);
+        /**
+         *
+         * Нужно вынести в отдельный метод
+         */
+
+
+        while (learningWordsForButtons.size() < countOfButtons) {
+            random = (int) (Math.random() * wordCards.size());
+            wordCard = wordCards.get(random);
+
+            if (!learningWordsForButtons.contains(wordCard)) {
+                learningWordsForButtons.add(wordCard);
+
+            }
+
         }
-        Log.i(TAG, " --->>> After created buttons " + currentLearningWords.toString());
+
         return learningWordsForButtons;
     }
 
