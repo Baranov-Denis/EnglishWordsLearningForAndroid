@@ -91,6 +91,19 @@ public class MainInterface {
 
 
 
+
+    public int getCountOfRepeatWord() {
+        return processOfLearning.getCountOfRepeatWord();
+    }
+
+    public void setCountOfRepeatWord(int count) {
+        processOfLearning.setCountOfRepeatWord(count);
+    }
+
+    public int getTheNumberOfWordsBeingStudied() {return processOfLearning.getCountOfCurrentLearnWords();}
+
+    public void setNumberOfCurrentLearnWords(int count) {processOfLearning.setCountOfCurrentLearnWords(count);}
+
     /**
      * ----------------------------------------- Learn Activity ------------------------------------
      */
@@ -107,14 +120,9 @@ public class MainInterface {
         return processOfLearning.getWordThatNeedsToBeTranslated();
     }
 
-    public int getCountOfRepeatWord() {
-        return processOfLearning.getCountOfRepeatWord();
-    }
-
-    public void setCountOfRepeatWord(int count) {
-        processOfLearning.setCountOfRepeatWord(count);
-    }
 
     public void startLearning(Context context) {
     }
+
+
 }

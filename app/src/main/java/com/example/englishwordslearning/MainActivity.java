@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static SharedPreferences mySharedPreference = null;
     public static final String COUNT_OF_REPEAT = "count_of_repeat";
+    public static final String COUNT_OF_NUMBER_CURRENT_WORDS = "count_of_number_current_words";
     public static final String APP_PREFERENCES = "mySettings";
 
    public static SharedPreferences getMySharedPreference() {
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (mySharedPreference.contains(COUNT_OF_REPEAT)) {
             mainInterface.setCountOfRepeatWord(mySharedPreference.getInt(COUNT_OF_REPEAT, 0));
+            mainInterface.setNumberOfCurrentLearnWords(mySharedPreference.getInt(COUNT_OF_NUMBER_CURRENT_WORDS,0));
         }
 
     }

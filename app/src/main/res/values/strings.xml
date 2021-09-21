@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">EnglishWordsLearning</string>
-    <string name="learn">Learn</string>
-    <string name="create">Create dictionary</string>
-    <string name="settings">Settings</string>
-    <string name="enter_english_word">Enter english word:</string>
-    <string name="enter_russian_word">Enter russian word:</string>
-    <string name="save">Save</string>
-    <string name="delete">Delete</string>
-    <string name="reset">Reset</string>
+    <string name="creating_name">Создание словаря</string>
+    <string name="learn_name">Изучать слова</string>
+    <string name="settings_name">Настройки</string>
+    <string name="enter_english_word">Введите английское слово:</string>
+    <string name="enter_russian_word">Введите русское слово:</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="reset">Сбросить</string>
     <string name="target_word">word</string>
-    <string name="choose_count_of_learning_words">Set count</string>
+    <string name="choose_count_of_learning_words">Установите количество слов для изучения</string>
+    <string name="choose_count_of_repeat_words">Установите количество повторений слова</string>
+    <string name="text">Текст</string>
 </resources>

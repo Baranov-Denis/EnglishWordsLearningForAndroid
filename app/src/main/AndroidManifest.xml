@@ -9,9 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EnglishWordsLearning">
-        <activity android:name=".SettingActivity"></activity>
-        <activity android:name=".LearnActivity" />
-        <activity android:name=".CreateActivity" />
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/settings_name"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".LearnActivity"
+            android:label="@string/learn_name"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".CreateActivity"
+            android:label="@string/creating_name"
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

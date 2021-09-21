@@ -52,7 +52,15 @@ public class ProcessOfLearning {
     /**
      * Количество слов в списке изучаемых слов
      */
-    private int countOfCurrentLearningWords = 10;
+    private int countOfCurrentLearnWords = 10;
+
+    public int getCountOfCurrentLearnWords() {
+        return countOfCurrentLearnWords;
+    }
+
+    public void setCountOfCurrentLearnWords(int countOfCurrentLearnWords) {
+        this.countOfCurrentLearnWords = countOfCurrentLearnWords;
+    }
 
     /**
      * количество необходимых правильных ответов для того чтобы слово считалось выученным
@@ -73,7 +81,27 @@ public class ProcessOfLearning {
 
 
     public void setCountOfRepeatWord(int countOfRepeatWord) {
+        if(countOfRepeatWord > this.countOfRepeatWord){
+            reWriteWordDataBaseAfterChangingRepeat(countOfRepeatWord);
+        }
         this.countOfRepeatWord = countOfRepeatWord;
+    }
+
+
+    /**
+     * Данный метод служит для того, чтобы при увеличении количества повторений слова,
+     * все выученые слова, которые были повторены меньше нового значения будут перезаписаны как невыученые
+     * @param newCount новое значение количества повторений слова
+     */
+    private void reWriteWordDataBaseAfterChangingRepeat(int newCount) {
+        for(WordCard wordCard : allOfWordsOfDictionary){
+            if(wordCard.getRightAnswerCount() < newCount){
+                if(wordCard.isLearned() > 0){
+                    wordCard.setIsLearned(0);
+                    wordsDataBase.changeExistsWord(wordCard);
+                }
+            }
+        }
     }
 
     public int getCountOfRepeatWord() {
@@ -199,7 +227,7 @@ public class ProcessOfLearning {
 
 
         //Выполняется пока не набрано заданное количество слов во временном списке
-        while (tempArrayList.size() < countOfCurrentLearningWords) {
+        while (tempArrayList.size() < countOfCurrentLearnWords) {
 
             randomCard = getRandomWordCardFromMainDictionary();
 
@@ -223,7 +251,7 @@ public class ProcessOfLearning {
             //Если временный список ещё не заполнен, а список для проверки полон, то
             //во временный список будет добавлено случайное слово
             if (checkedWordCards.size() >= allOfWordsOfDictionary.size()) {
-                Toast toast = Toast.makeText(context, "СЛОВА ЗАКАНЧИВАЮТСЯ!!!", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(context, "СЛОВА ЗАКАНЧИВАЮТСЯ!!!", Toast.LENGTH_SHORT);
                 toast.show();
                 int check = 0;
                 while (check == 0) {
@@ -258,7 +286,7 @@ public class ProcessOfLearning {
         //if (currentLearningWords == null) {
         for (WordCard wordCard : allOfWordsOfDictionary) {
             if (wordCard.nowLearning() > 0) tempArrayList.add(wordCard);
-            if (tempArrayList.size() == countOfCurrentLearningWords) break;
+            if (tempArrayList.size() == countOfCurrentLearnWords) break;
         }
         // }
         return tempArrayList;
@@ -272,7 +300,7 @@ public class ProcessOfLearning {
      */
     public void showWord(View view) {
         TextView targetWord = view.findViewById(R.id.target_word);
-        String learnWord = wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1);
+        String learnWord = wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1) + " / " + countOfCurrentLearnWords;
         targetWord.setText(learnWord);
     }
 
@@ -339,7 +367,7 @@ public class ProcessOfLearning {
             ll.addView(myButton);
         }
 
-        showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1), view);
+        showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + " / " + (countOfRepeatWord + 1)+ " / " + countOfCurrentLearnWords + " / " + allOfWordsOfDictionary.size(), view);
     }
 
 

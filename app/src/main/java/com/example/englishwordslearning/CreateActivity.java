@@ -1,6 +1,8 @@
 package com.example.englishwordslearning;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.database.Cursor;
 import android.database.SQLException;
@@ -19,6 +21,8 @@ import com.example.englishwordslearning.database.WordsDataBase;
 import com.example.englishwordslearning.logik.MainInterface;
 import com.example.englishwordslearning.logik.ProcessOfLearning;
 import com.example.englishwordslearning.logik.WordCard;
+
+import java.util.ArrayList;
 
 public class CreateActivity extends AppCompatActivity {
 
@@ -45,6 +49,11 @@ public class CreateActivity extends AppCompatActivity {
         // database = mainInterface.getSQLiteDatabase();
         createWordsList();
         setOnClickForButtons();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -124,10 +133,17 @@ public class CreateActivity extends AppCompatActivity {
         //Получаем базу данных
         SQLiteDatabase database = mainInterface.getSQLiteDatabase();
         //Создаём курсор который содержит _id слова, английское слово, русское слово и количество правильных ответов соответствующих этому слову
-        Cursor wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, null, null, null, null, "ENGLISH_WORD");
+        Cursor wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT","NOW_LEARNING" , "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+
+
+
         //Создаём адаптер для того чтобы вывести данные из курсора на экран
         SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(this, R.layout.list, wordCursor,
-                new String[]{"ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT"}, new int[]{R.id.text1, R.id.text2, R.id.text3}, 0);
+                new String[]{"ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT","NOW_LEARNING","IS_LEARNED"}, new int[]{R.id.text1, R.id.text2, R.id.text3,R.id.text4, R.id.text5, R.id.text6}, 0);
+
+
+
+
         //Подключаем адаптер
         wordsList.setAdapter(cursorAdapter);
 

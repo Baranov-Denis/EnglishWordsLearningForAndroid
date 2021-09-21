@@ -1,6 +1,8 @@
 package com.example.englishwordslearning;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,20 +21,52 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
         mainInterface = MainInterface.getMainInterface(this);
         setSeekBar();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void setSeekBar() {
         int countOfRepeatWord = mainInterface.getCountOfRepeatWord();
-        SeekBar seekBar = findViewById(R.id.seekBarForCountOfLearningWords);
-        seekBar.setProgress(countOfRepeatWord);
-        TextView textViewOfCount = findViewById(R.id.count_of_repeat_int);
-        textViewOfCount.setText(String.valueOf(countOfRepeatWord));
+        int countOfCurrentLearnWords = mainInterface.getTheNumberOfWordsBeingStudied();
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        SeekBar seekBarOfRepeat = findViewById(R.id.seek_bar_for_count_of_repeat_words);
+        seekBarOfRepeat.setProgress(countOfRepeatWord);
+        TextView textViewOfRepeat = findViewById(R.id.count_of_repeat_int);
+        textViewOfRepeat.setText(String.valueOf(++countOfRepeatWord));
+
+        SeekBar seekBarOfNumber = findViewById(R.id.seek_bar_count_of_current_learn_words);
+        seekBarOfNumber.setProgress(countOfCurrentLearnWords);
+        TextView textViewOfNumber = findViewById(R.id.count_of_current_learn_words_int);
+        textViewOfNumber.setText(String.valueOf(countOfCurrentLearnWords));
+
+
+        seekBarOfRepeat.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int count, boolean b) {
                 mainInterface.setCountOfRepeatWord(count);
-                textViewOfCount.setText(String.valueOf(count));
+                textViewOfRepeat.setText(String.valueOf(++count));
+                saveSettings();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        seekBarOfNumber.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int count, boolean b) {
+                mainInterface.setNumberOfCurrentLearnWords(count);
+                textViewOfNumber.setText(String.valueOf(count));
                 saveSettings();
             }
 
@@ -51,6 +85,7 @@ public class SettingActivity extends AppCompatActivity {
     private void saveSettings() {
         SharedPreferences.Editor editor = MainActivity.getMySharedPreference().edit();
         editor.putInt(MainActivity.COUNT_OF_REPEAT, mainInterface.getCountOfRepeatWord());
+        editor.putInt(MainActivity.COUNT_OF_NUMBER_CURRENT_WORDS, mainInterface.getTheNumberOfWordsBeingStudied());
         editor.apply();
     }
 }

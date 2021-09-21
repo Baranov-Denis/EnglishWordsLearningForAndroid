@@ -1,6 +1,8 @@
 package com.example.englishwordslearning;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -31,6 +33,12 @@ public class LearnActivity extends AppCompatActivity {
         mainInterface.createButtonsForLearning(findViewById(R.id.learn_activity),this);
 
         mainInterface.showWordForLearn(findViewById(R.id.learn_activity));
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
     }
 }
