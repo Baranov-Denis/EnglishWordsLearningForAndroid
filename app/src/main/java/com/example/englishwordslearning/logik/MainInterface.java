@@ -2,20 +2,15 @@ package com.example.englishwordslearning.logik;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.View;
 
-import com.example.englishwordslearning.LearnActivity;
-import com.example.englishwordslearning.database.WordsDataBase;
-
-import java.util.ArrayList;
-import java.util.HashSet;
+import com.example.englishwordslearning.database.WordsDataBaseHelper;
 
 public class MainInterface {
 
     private static MainInterface mainInterface;
 
-    private final WordsDataBase wordsDataBase;
+    private final WordsDataBaseHelper wordsDataBaseHelper;
     //  private final SQLiteDatabase mySQLiteDatabase;
     private ProcessOfLearning processOfLearning;
 
@@ -40,7 +35,7 @@ public class MainInterface {
      */
     private MainInterface(Context context) {
 
-        wordsDataBase = WordsDataBase.getWordsDataBase(context);
+        wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBase(context);
         processOfLearning = ProcessOfLearning.getProcessOfLearning();
 
       //  processOfLearning.setAllOfWordsOfDictionary(wordsDataBase.loadDictionaryFromSQLiteDataBase());
@@ -54,7 +49,7 @@ public class MainInterface {
      * @return SQLiteDataBase
      */
     public SQLiteDatabase getSQLiteDatabase() {
-        return wordsDataBase.getWritableDatabase();
+        return wordsDataBaseHelper.getMainDataBase();
     }
 
     /**

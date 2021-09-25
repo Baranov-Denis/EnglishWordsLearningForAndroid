@@ -5,24 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-import com.example.englishwordslearning.database.WordsDataBase;
 import com.example.englishwordslearning.logik.MainInterface;
-import com.example.englishwordslearning.logik.ProcessOfLearning;
-import com.example.englishwordslearning.logik.WordCard;
-
-import java.util.ArrayList;
 
 public class CreateActivity extends AppCompatActivity {
 
@@ -133,7 +125,7 @@ public class CreateActivity extends AppCompatActivity {
         //Получаем базу данных
         SQLiteDatabase database = mainInterface.getSQLiteDatabase();
         //Создаём курсор который содержит _id слова, английское слово, русское слово и количество правильных ответов соответствующих этому слову
-        Cursor wordCursor = database.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT","NOW_LEARNING" , "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+        Cursor wordCursor = database.query("words", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT","NOW_LEARNING" , "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
 
 
 
