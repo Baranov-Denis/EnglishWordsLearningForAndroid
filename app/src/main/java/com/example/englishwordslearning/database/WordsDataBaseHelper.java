@@ -25,7 +25,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
 
 
     private final static String TAG = "--->>>   ";
-    private static final int DB_VERSION = 47;
+    private static final int DB_VERSION = 100;
 
     private final Context mContext;
 
@@ -61,9 +61,6 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
         Log.i(TAG, DB_VERSION + "");
 
-        //    SQLiteOpenHelper liteOpenHelper = this;
-        //   userDatabase = liteOpenHelper.getWritableDatabase();
-
         if (android.os.Build.VERSION.SDK_INT >= 17)
             DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
         else
@@ -75,12 +72,15 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         openDataBase();
 
         this.getReadableDatabase();
+
         try {
             updateDataBase();
         } catch (Exception e) {
             Log.i(TAG, "Mega fail");
         }
+
         this.getReadableDatabase();
+
     }
 
     @Override
@@ -118,6 +118,8 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         File dbFile = new File(DB_PATH + DB_NAME);
         return dbFile.exists();
     }
+
+
 
     private void copyDBFile() throws IOException {
         InputStream mInput = mContext.getAssets().open(DB_NAME);
@@ -173,7 +175,17 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         if (mNeedUpdate) {
 
             File dbFile = new File(DB_PATH + DB_NAME);
+
+            Cursor userCursor1 = mainDataBase.query(TABLE_NAME, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+            while (userCursor1.moveToNext()) {
+
+                Log.i(TAG, userCursor1.getString(1));
+                insertWord(mainDataBase, "MAIN_DICTIONARY", userCursor1.getString(1), userCursor1.getString(2), userCursor1.getInt(3), userCursor1.getInt(4), userCursor1.getInt(5), userCursor1.getInt(6));
+            }
+            userCursor1.close();
+
             if (dbFile.exists()) {
+
                 dbFile.delete();
             }
 
@@ -184,8 +196,8 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
             Cursor userCursor = userDataBase.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
             while (userCursor.moveToNext()) {
 
-                Log.i(TAG , userCursor.getString(1));
-                insertWord(mainDataBase, userCursor.getString(1), userCursor.getString(2), userCursor.getInt(3), userCursor.getInt(4), userCursor.getInt(5), userCursor.getInt(6));
+                Log.i(TAG, userCursor.getString(1));
+                insertWord(mainDataBase, "MAIN_DICTIONARY", userCursor.getString(1), userCursor.getString(2), userCursor.getInt(3), userCursor.getInt(4), userCursor.getInt(5), userCursor.getInt(6));
             }
 
             mNeedUpdate = false;
@@ -211,7 +223,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private void insertWord(SQLiteDatabase db, String englishWord, String russianWord, int rightAnswer, int wrongAnswer, int nowLearning, int isLearned) {
+    private void insertWord(SQLiteDatabase db, String tableName, String englishWord, String russianWord, int rightAnswer, int wrongAnswer, int nowLearning, int isLearned) {
         if (!testExistingWord(db, englishWord, russianWord)) {
             ContentValues wordValue = new ContentValues();
             wordValue.put("ENGLISH_WORD", englishWord);
@@ -220,7 +232,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
             wordValue.put("WRONG_ANSWER_STAT", wrongAnswer);
             wordValue.put("NOW_LEARNING", nowLearning);
             wordValue.put("IS_LEARNED", isLearned);
-            db.insert(TABLE_NAME, null, wordValue);
+            db.insert(tableName, null, wordValue);
         }
     }
 
@@ -346,7 +358,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         String deletingWord = "";
         Cursor cursor = mainDataBase.query(TABLE_NAME, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "_id = ?", new String[]{Long.toString(id)}, null, null, null);
         if (cursor.moveToNext()) {
-             deletingWord = cursor.getString(1);
+            deletingWord = cursor.getString(1);
         }
         cursor.close();
         deleteWord(mainDataBase, id);
@@ -367,7 +379,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         while (wordCursor.moveToNext()) {
             tempLibrary.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
         }
-wordCursor.close();
+        wordCursor.close();
 
         return tempLibrary;
 

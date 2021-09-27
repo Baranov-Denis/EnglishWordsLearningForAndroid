@@ -36,7 +36,7 @@ public class MainInterface {
     private MainInterface(Context context) {
 
         wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBase(context);
-        processOfLearning = ProcessOfLearning.getProcessOfLearning();
+        processOfLearning = ProcessOfLearning.getProcessOfLearning(context);
 
       //  processOfLearning.setAllOfWordsOfDictionary(wordsDataBase.loadDictionaryFromSQLiteDataBase());
     }
