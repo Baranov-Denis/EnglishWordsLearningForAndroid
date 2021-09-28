@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 
 //import com.example.englishwordslearning.database.DatabaseHelper;
-import com.example.englishwordslearning.database.UserDataBaseHelper;
+//import com.example.englishwordslearning.database.UserDataBaseHelper;
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 import com.example.englishwordslearning.logik.MainInterface;
 
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         //Подключение кнопок
         setOnClickButtons();
         //Загружаем базу данных
-        UserDataBaseHelper.getWordsDataBase(this);
+        //UserDataBaseHelper.getWordsDataBase(this);
          WordsDataBaseHelper.getWordsDataBase(this);
 
 

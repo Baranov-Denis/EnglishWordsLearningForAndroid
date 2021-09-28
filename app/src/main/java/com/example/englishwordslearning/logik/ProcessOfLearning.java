@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.englishwordslearning.R;
 import com.example.englishwordslearning.database.ExternalDatabaseHelper;
-import com.example.englishwordslearning.database.UserDataBaseHelper;
+//import com.example.englishwordslearning.database.UserDataBaseHelper;
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class ProcessOfLearning {
     private static ProcessOfLearning processOfLearning;
     private WordsDataBaseHelper wordsDataBaseHelper;
     private static final String TAG = " ->> learning";
-    private UserDataBaseHelper userDataBaseHelper;
+  //  private UserDataBaseHelper userDataBaseHelper;
 
     private Context mainContext;
 
@@ -135,13 +135,13 @@ public class ProcessOfLearning {
  *
  *
  */
-        ExternalDatabaseHelper externalDatabaseHelper = new ExternalDatabaseHelper(context);
+     /*   ExternalDatabaseHelper externalDatabaseHelper = new ExternalDatabaseHelper(context);
         SQLiteDatabase externalDatabase = externalDatabaseHelper.getExternalDatabase();
         Cursor wordCursor = externalDatabase.query("words", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
         while (wordCursor.moveToNext()) {
             Log.i(TAG, "  0 0 0 0 0 0   " +wordCursor.getString(1));
         }
-        wordCursor.close();
+        wordCursor.close();*/
 /**
  *
  *
@@ -164,7 +164,7 @@ public class ProcessOfLearning {
     private ProcessOfLearning(Context context) {
         this.mainContext = context;
         wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBase();
-        userDataBaseHelper = UserDataBaseHelper.getUserDataBaseHelper();
+      //  userDataBaseHelper = UserDataBaseHelper.getUserDataBaseHelper();
         loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
 
     }

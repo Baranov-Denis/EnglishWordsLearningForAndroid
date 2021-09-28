@@ -99,6 +99,8 @@ public class MainInterface {
 
     public void setNumberOfCurrentLearnWords(int count) {processOfLearning.setCountOfCurrentLearnWords(count);}
 
+
+
     /**
      * ----------------------------------------- Learn Activity ------------------------------------
      */

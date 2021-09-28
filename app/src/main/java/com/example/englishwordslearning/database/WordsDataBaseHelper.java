@@ -25,21 +25,21 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
 
 
     private final static String TAG = "--->>>   ";
-    private static final int DB_VERSION = 100;
+    private static final int DB_VERSION = 1;
 
     private final Context mContext;
 
-    private static final String DB_NAME = "super.db";
-    private static String DB_PATH = "";
-    private final static String TABLE_NAME = "words";
+    private static final String DB_NAME = "MAIN_DATABASE";
+
+    private final static String TABLE_NAME = "MAIN_TABLE_DATABASE";
     private static SQLiteDatabase mainDataBase;
 
     private static WordsDataBaseHelper wordsDataBaseHelper;
-    private boolean mNeedUpdate = false;
 
-    private UserDataBaseHelper userDataBaseHelper;
-    private static SQLiteDatabase userDataBase;
 
+    public static String getTableName() {
+        return TABLE_NAME;
+    }
 
     public static SQLiteDatabase getMainDataBase() {
         return mainDataBase;
@@ -59,152 +59,60 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
     private WordsDataBaseHelper(Context context) {
 
         super(context, DB_NAME, null, DB_VERSION);
-        Log.i(TAG, DB_VERSION + "");
-
-        if (android.os.Build.VERSION.SDK_INT >= 17)
-            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        else
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
 
         this.mContext = context;
 
-        copyDataBase();
-        openDataBase();
+        WordsDataBaseHelper wordsDataBaseHelper = this;
+        mainDataBase = wordsDataBaseHelper.getReadableDatabase();
 
         this.getReadableDatabase();
+        Log.i(TAG, mainDataBase.toString());
 
-        try {
-            updateDataBase();
-        } catch (Exception e) {
-            Log.i(TAG, "Mega fail");
-        }
-
-        this.getReadableDatabase();
-
-    }
-
-    @Override
-    public synchronized void close() {
-        if (mainDataBase != null)
-            mainDataBase.close();
-        super.close();
-    }
-
-    public boolean openDataBase() throws SQLException {
-
-
-        userDataBaseHelper = UserDataBaseHelper.getWordsDataBase(mContext);
-        userDataBase = userDataBaseHelper.getUserDataBase();
-
-
-        mainDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-        return mainDataBase != null;
-    }
-
-
-    private void copyDataBase() {
-        if (!checkDataBase()) {
-            this.getReadableDatabase();
-            this.close();
-            try {
-                copyDBFile();
-            } catch (IOException mIOException) {
-                throw new Error("ErrorCopyingDataBase");
-            }
-        }
-    }
-
-    private boolean checkDataBase() {
-        File dbFile = new File(DB_PATH + DB_NAME);
-        return dbFile.exists();
-    }
-
-
-
-    private void copyDBFile() throws IOException {
-        InputStream mInput = mContext.getAssets().open(DB_NAME);
-        //InputStream mInput = mContext.getResources().openRawResource(R.raw.info);
-        OutputStream mOutput = new FileOutputStream(DB_PATH + DB_NAME);
-        byte[] mBuffer = new byte[1024];
-        int mLength;
-        while ((mLength = mInput.read(mBuffer)) > 0)
-            mOutput.write(mBuffer, 0, mLength);
-        mOutput.flush();
-        mOutput.close();
-        mInput.close();
     }
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // upgradeMyDataBase(db, 0, DB_VERSION);
+
+        db.execSQL("CREATE TABLE MAIN_TABLE_DATABASE (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
+                "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
+
+        insertExternalDatabase(db);
 
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.i(TAG, "update");
-        if (newVersion > oldVersion)
-            mNeedUpdate = true;
+        insertExternalDatabase(db);
     }
 
- /* @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        //if(oldVersion < DB_VERSION){
-        mNeedUpdate = true;
-        upgradeMyDataBase(sqLiteDatabase, oldVersion, newVersion);
-      //  }
-    }*/
+    private void insertExternalDatabase(SQLiteDatabase db){
+        String englishWord;
+        String russianWord;
+        ExternalDatabaseHelper externalDatabaseHelper = new ExternalDatabaseHelper(mContext);
+
+        SQLiteDatabase externalDatabase = externalDatabaseHelper.getExternalDatabase();
+
+        Cursor wordCursor = externalDatabase.query(ExternalDatabaseHelper.getTableName(), new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+        while (wordCursor.moveToNext()) {
+            englishWord = wordCursor.getString(1).toLowerCase();
+            russianWord = wordCursor.getString(2).toLowerCase();
+            insertWord(db, englishWord, russianWord);
+        }
+        wordCursor.close();
+    }
 
 
-    private void upgradeMyDataBase(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        try {
-            updateDataBase();
-        } catch (Exception e) {
-            Log.i("------------", "Mega fail");
+    private void upgradeMyDataBase(SQLiteDatabase db, int i, int dbVersion) {
+        if (dbVersion == 1) {
+            db.execSQL("CREATE TABLE TABLE_NAME (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
+                    "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
         }
 
-
     }
 
-
-    private void updateDataBase() throws IOException {
-
-
-        if (mNeedUpdate) {
-
-            File dbFile = new File(DB_PATH + DB_NAME);
-
-            Cursor userCursor1 = mainDataBase.query(TABLE_NAME, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
-            while (userCursor1.moveToNext()) {
-
-                Log.i(TAG, userCursor1.getString(1));
-                insertWord(mainDataBase, "MAIN_DICTIONARY", userCursor1.getString(1), userCursor1.getString(2), userCursor1.getInt(3), userCursor1.getInt(4), userCursor1.getInt(5), userCursor1.getInt(6));
-            }
-            userCursor1.close();
-
-            if (dbFile.exists()) {
-
-                dbFile.delete();
-            }
-
-            copyDataBase();
-            mainDataBase = this.getReadableDatabase();
-
-
-            Cursor userCursor = userDataBase.query("DICTIONARY", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
-            while (userCursor.moveToNext()) {
-
-                Log.i(TAG, userCursor.getString(1));
-                insertWord(mainDataBase, "MAIN_DICTIONARY", userCursor.getString(1), userCursor.getString(2), userCursor.getInt(3), userCursor.getInt(4), userCursor.getInt(5), userCursor.getInt(6));
-            }
-
-            mNeedUpdate = false;
-        }
-
-
-    }
 
     /**
      * Вставка слов в базу данных
@@ -334,7 +242,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
             String correctedRussianWord = russianWord.toLowerCase();
             //Запуск метода вставки в базу данных
             insertWord(mainDataBase, correctedEnglishWord, correctedRussianWord);
-            userDataBaseHelper.insertWord(userDataBase, correctedEnglishWord, correctedRussianWord);
+            //  userDataBaseHelper.insertWord(userDataBase, correctedEnglishWord, correctedRussianWord);
 
 
             Toast toast = Toast.makeText(view.getContext(), "Word added", Toast.LENGTH_SHORT);
@@ -362,7 +270,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         deleteWord(mainDataBase, id);
-        userDataBaseHelper.deleteCurrentWord(deletingWord);
+        //   userDataBaseHelper.deleteCurrentWord(deletingWord);
     }
 
 

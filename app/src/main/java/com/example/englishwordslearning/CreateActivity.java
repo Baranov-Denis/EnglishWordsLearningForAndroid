@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.example.englishwordslearning.database.WordsDataBaseHelper;
 import com.example.englishwordslearning.logik.MainInterface;
 
 public class CreateActivity extends AppCompatActivity {
@@ -125,7 +126,7 @@ public class CreateActivity extends AppCompatActivity {
         //Получаем базу данных
         SQLiteDatabase database = mainInterface.getSQLiteDatabase();
         //Создаём курсор который содержит _id слова, английское слово, русское слово и количество правильных ответов соответствующих этому слову
-        Cursor wordCursor = database.query("words", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT","NOW_LEARNING" , "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+        Cursor wordCursor = database.query(WordsDataBaseHelper.getTableName(), new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT","WRONG_ANSWER_STAT","NOW_LEARNING" , "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
 
 
 
