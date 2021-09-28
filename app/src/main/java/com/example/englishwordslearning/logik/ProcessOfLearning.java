@@ -1,6 +1,7 @@
 package com.example.englishwordslearning.logik;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -10,11 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.englishwordslearning.MainActivity;
 import com.example.englishwordslearning.R;
-import com.example.englishwordslearning.database.ExternalDatabaseHelper;
-//import com.example.englishwordslearning.database.UserDataBaseHelper;
+import com.example.englishwordslearning.SettingActivity;
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -22,8 +24,8 @@ public class ProcessOfLearning {
 
     private static ProcessOfLearning processOfLearning;
     private WordsDataBaseHelper wordsDataBaseHelper;
+    private SQLiteDatabase wordsDatabase;
     private static final String TAG = " ->> learning";
-  //  private UserDataBaseHelper userDataBaseHelper;
 
     private Context mainContext;
 
@@ -31,6 +33,8 @@ public class ProcessOfLearning {
      * ArrayList содержащий все слова из библиотеки
      */
     private ArrayList<WordCard> allOfWordsOfDictionary;
+
+    private int numberOfUnlearnedWords;
 
     /**
      * ArrayList в котором содержатся слова, которые изучаются в настоящее время
@@ -88,7 +92,7 @@ public class ProcessOfLearning {
 
 
     public void setCountOfRepeatWord(int countOfRepeatWord) {
-        if(countOfRepeatWord > this.countOfRepeatWord){
+        if (countOfRepeatWord > this.countOfRepeatWord) {
             reWriteWordDataBaseAfterChangingRepeat(countOfRepeatWord);
         }
         this.countOfRepeatWord = countOfRepeatWord;
@@ -98,12 +102,13 @@ public class ProcessOfLearning {
     /**
      * Данный метод служит для того, чтобы при увеличении количества повторений слова,
      * все выученые слова, которые были повторены меньше нового значения будут перезаписаны как невыученые
+     *
      * @param newCount новое значение количества повторений слова
      */
     private void reWriteWordDataBaseAfterChangingRepeat(int newCount) {
-        for(WordCard wordCard : allOfWordsOfDictionary){
-            if(wordCard.getRightAnswerCount() < newCount){
-                if(wordCard.isLearned() > 0){
+        for (WordCard wordCard : allOfWordsOfDictionary) {
+            if (wordCard.getRightAnswerCount() < newCount) {
+                if (wordCard.isLearned() > 0) {
                     wordCard.setIsLearned(0);
                     wordsDataBaseHelper.changeExistsWord(wordCard);
                 }
@@ -126,47 +131,37 @@ public class ProcessOfLearning {
             processOfLearning = new ProcessOfLearning(context);
         }
 
-/**
- *
- *
- *
- *
- *
- *
- *
- */
-     /*   ExternalDatabaseHelper externalDatabaseHelper = new ExternalDatabaseHelper(context);
-        SQLiteDatabase externalDatabase = externalDatabaseHelper.getExternalDatabase();
-        Cursor wordCursor = externalDatabase.query("words", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
-        while (wordCursor.moveToNext()) {
-            Log.i(TAG, "  0 0 0 0 0 0   " +wordCursor.getString(1));
-        }
-        wordCursor.close();*/
-/**
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
         return processOfLearning;
     }
 
+
+    /**
+     * Конструктор!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     */
     private ProcessOfLearning(Context context) {
         this.mainContext = context;
-        wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBase();
-      //  userDataBaseHelper = UserDataBaseHelper.getUserDataBaseHelper();
-        loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
+        wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBaseHelper();
+        wordsDatabase = wordsDataBaseHelper.getReadableDatabase();
+        allOfWordsOfDictionary = loadWordsDictionary();
+        Log.i(TAG, "unlearned words : " + numberOfUnlearnedWords);
+    }
 
+
+    /**
+     * Загрузка главного словаря
+     *
+     * @return возвращает словарь состоящий из всех слов, содержащихся в базе данных
+     */
+    private ArrayList<WordCard> loadWordsDictionary() {
+        ArrayList<WordCard> allWords = new ArrayList<>();
+        numberOfUnlearnedWords = 0;
+        Cursor wordCursor = wordsDatabase.query(WordsDataBaseHelper.getTableName(), null, null, null, null, null, "ENGLISH_WORD");
+        while (wordCursor.moveToNext()) {
+            if (wordCursor.getInt(6) == 0) numberOfUnlearnedWords++;
+            allWords.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
+        }
+        Log.i(TAG, "unlearned words : " + numberOfUnlearnedWords + " all words : " + allWords.size());
+        return allWords;
     }
 
     public void setAllOfWordsOfDictionary(ArrayList<WordCard> allOfWordsOfDictionary) {
@@ -177,11 +172,11 @@ public class ProcessOfLearning {
     /**
      * Данный метод заполняет карточками основной массив содержащий все слова
      */
-    public void loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary() {
+    // public void loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary() {
 
-        allOfWordsOfDictionary = wordsDataBaseHelper.loadDictionaryFromSQLiteDataBase();
+    //   allOfWordsOfDictionary = wordsDataBaseHelper.loadDictionaryFromSQLiteDataBase();
 
-    }
+    //   }
 
     /**
      * ----------------------------- Create Activity -----------------------------------------------
@@ -200,7 +195,7 @@ public class ProcessOfLearning {
      */
     public void addNewWord(String EnglishWord, String russianWord, View view) {
         wordsDataBaseHelper.addNewWord(EnglishWord, russianWord, view);
-        loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
+        allOfWordsOfDictionary = loadWordsDictionary();
     }
 
     /**
@@ -211,7 +206,7 @@ public class ProcessOfLearning {
      */
     public void deleteCurrentWord(long targetWord) {
         wordsDataBaseHelper.deleteCurrentWord(targetWord);
-        loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
+        allOfWordsOfDictionary = loadWordsDictionary();
     }
 
 
@@ -229,116 +224,80 @@ public class ProcessOfLearning {
             wordCard.setIsLearned(0);
             wordsDataBaseHelper.changeExistsWord(wordCard);
         }
-        loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
+        allOfWordsOfDictionary = loadWordsDictionary();
         //Очищает словарь изучаемых слов. Иначе при изучении будут загружены не сброшенные данные.
         currentLearningWords = null;
     }
 
 
     /**
+     * ---------------------------------------------------------------------------------------------
      * ----------------------------- Learn Activity ------------------------------------------------
+     * ---------------------------------------------------------------------------------------------
      */
 
 
-    private ArrayList<WordCard> repeatCreatingArray(ArrayList<WordCard> tempArrayList) {
-        //Проверка существования словаря изучаемых слов
-        //Если словарь изучаемых слов уже существует то он будет скопирован
-        //во временный словарь
-        // Иначе будет запущено создание нового словаря
-        if (currentLearningWords != null) {
-            tempArrayList = new ArrayList<>(currentLearningWords);
-        } else {
-            tempArrayList = createLearningListFromMainDictionary();
-            answeredTrue = true;
-        }
-        return tempArrayList;
-    }
-
-
-    /**
-     * Создаёт список изучаемых слов
-     *
-     * @return ArrayList со списком изучаемых слов помеченных как nowLearning > 0
-     */
-    private ArrayList<WordCard> createCurrentLearningWordsArrayList(Context context) {
-
-        for(WordCard k : allOfWordsOfDictionary)Log.i("----------->> " , k.getEnglishWord() +" " + allOfWordsOfDictionary.size());
-
-        ArrayList<WordCard> tempArrayList = new ArrayList<>();
-        //Массив для проверки того, сколько слов уже перебрали
-        //Нужен для того, чтобы начать добавлять повторные слова, когда словарь заканчивается
-        ArrayList<WordCard> checkedWordCards = new ArrayList<>();
+    private ArrayList<WordCard> createLearnList() {
+        ArrayList<WordCard> learnList = new ArrayList<>();
         WordCard randomCard;
+        boolean endingWords = false;
 
 
-        tempArrayList = repeatCreatingArray(tempArrayList);
+        if (currentLearningWords == null) {
+            for (WordCard wordCard : allOfWordsOfDictionary) {
+                if (wordCard.nowLearning() > 0 & wordCard.isLearned() == 0) learnList.add(wordCard);
+            }
+        }else {
+            learnList = new ArrayList<>(currentLearningWords);
+        }
 
 
-        //Выполняется пока не набрано заданное количество слов во временном списке
-        while (tempArrayList.size() < countOfCurrentLearnWords) {
+        while (learnList.size() < countOfCurrentLearnWords) {
 
             randomCard = getRandomWordCardFromMainDictionary();
 
-            if (!checkedWordCards.contains(randomCard)) {
-                checkedWordCards.add(randomCard);
-            }
+            if (numberOfUnlearnedWords > countOfCurrentLearnWords) {
+                if (randomCard.nowLearning() == 0 && !learnList.contains(randomCard) && randomCard.isLearned() == 0) {
+                    //Присваиваем карточке слова отметку о том, что оно изучается в настоящее время
+                    randomCard.setNowLearning(1);
+                    //Перезаписываем данные о карточке в базе данных
+                    wordsDataBaseHelper.changeExistsWord(randomCard);
+                    learnList.add(randomCard);
+                }
+            } else {
 
+                if (!learnList.contains(randomCard)) {
+                    endingWords = true;
+                    //Присваиваем карточке слова отметку о том, что оно изучается в настоящее время
+                    randomCard.setNowLearning(1);
+                    //Перезаписываем данные о карточке в базе данных
+                    wordsDataBaseHelper.changeExistsWord(randomCard);
+                    learnList.add(randomCard);
 
-            //Проверяем содержится ли случайная карточка во временном списке
-            //Проверяем есть ли у карточки слова отметка о том, что оно выучено
-            //Если карточка не была добавлена ранее и не была выучена, то она будет добавлена во временный список, а после в список изучаемых слов
-            if (!tempArrayList.contains(randomCard) && randomCard.isLearned() == 0) {
-                //Присваиваем карточке слова отметку о том, что оно изучается в настоящее время
-                randomCard.setNowLearning(1);
-                //Добавляем карточку слова во временный список
-                tempArrayList.add(randomCard);
-                //Перезаписываем данные о карточке в базе данных
-                wordsDataBaseHelper.changeExistsWord(randomCard);
-            }
-
-            //Если временный список ещё не заполнен, а список для проверки полон, то
-            //во временный список будет добавлено случайное слово
-            if (checkedWordCards.size() >= allOfWordsOfDictionary.size()) {
-                Toast toast = Toast.makeText(context, "СЛОВА ЗАКАНЧИВАЮТСЯ!!!", Toast.LENGTH_SHORT);
-                toast.show();
-                int check = 0;
-                while (check == 0) {
-                    randomCard = getRandomWordCardFromMainDictionary();
-                    if (!tempArrayList.contains(randomCard)) {
-                        tempArrayList.add(randomCard);
-                        check++;
-                    }
                 }
             }
-
         }
-        return tempArrayList;
+        if (endingWords) {
+            String text = "";
+
+            if(numberOfUnlearnedWords > 0) text = "Слова на исходе осталось неизученно : " + numberOfUnlearnedWords;
+            else text = "Вы выучили все слова.";
+
+            Toast toast = Toast.makeText(mainContext, text, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        return learnList;
     }
 
-    private WordCard getRandomWordCardFromMainDictionary(){
+
+
+
+    private WordCard getRandomWordCardFromMainDictionary() {
         int random;
         random = (int) (Math.random() * allOfWordsOfDictionary.size());
         return allOfWordsOfDictionary.get(random);
     }
 
-
-    /**
-     * Проверяет существует ли словарь изучаемых слов
-     * Если не существует, то пробует загрузить его из списка всех существующих слов
-     * для этого проверяется nowLearning если > 0 то добавляется в словарь изучаемых слов
-     *
-     * @return Array List с карточками
-     */
-    private ArrayList<WordCard> createLearningListFromMainDictionary() {
-        ArrayList<WordCard> tempArrayList = new ArrayList<>();
-        //if (currentLearningWords == null) {
-        for (WordCard wordCard : allOfWordsOfDictionary) {
-            if (wordCard.nowLearning() > 0) tempArrayList.add(wordCard);
-            if (tempArrayList.size() == countOfCurrentLearnWords) break;
-        }
-        // }
-        return tempArrayList;
-    }
 
 
     /**
@@ -348,7 +307,7 @@ public class ProcessOfLearning {
      */
     public void showWord(View view) {
         TextView targetWord = view.findViewById(R.id.target_word);
-        String learnWord = wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1) + " / " + countOfCurrentLearnWords;
+        String learnWord = wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + wordThatNeedsToBeTranslated.isLearned() + " / " + countOfCurrentLearnWords;
         targetWord.setText(learnWord);
     }
 
@@ -375,19 +334,13 @@ public class ProcessOfLearning {
         ll.removeAllViews();
 
 
-        loadDictionaryFromSQLiteDataBaseToAllOfWordsOfDictionary();
+        allOfWordsOfDictionary = loadWordsDictionary();
 
-
-        currentLearningWords = createCurrentLearningWordsArrayList(context);
-
-        Log.i(TAG, "after creating ==================================== " + currentLearningWords.size());
+        currentLearningWords = createLearnList();
 
 
         if (answeredTrue) {
-
             learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
-
-            Log.i(TAG, "More point");
             wordThatNeedsToBeTranslated = getWordForLearn(learningWordsForButtons);
         }
 
@@ -417,7 +370,7 @@ public class ProcessOfLearning {
         }
 
 
-        showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + " / " + (countOfRepeatWord + 1)+ " / " + countOfCurrentLearnWords + " / " + allOfWordsOfDictionary.size(), view);
+        showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/now " + wordThatNeedsToBeTranslated.nowLearning() + " / " + countOfCurrentLearnWords + " / " + numberOfUnlearnedWords, view);
     }
 
 
@@ -434,19 +387,12 @@ public class ProcessOfLearning {
         WordCard wordCard;
         int random = 0;
 
-        /**
-         *
-         * Нужно вынести в отдельный метод
-         */
-
-        Log.i("------------ >> " , "start new " + learningWordsForButtons.size() );
         while (learningWordsForButtons.size() < countOfButtons) {
-            Log.i("------------ >> " , "start new " + learningWordsForButtons.size() );
             random = (int) (Math.random() * wordCards.size());
             wordCard = wordCards.get(random);
+
             if (!learningWordsForButtons.contains(wordCard)) {
                 learningWordsForButtons.add(wordCard);
-
             }
 
         }
@@ -460,6 +406,7 @@ public class ProcessOfLearning {
      *                 Тут будет проверка ответа
      */
     public void onClickButton(WordCard wordCard, View view, Context context) {
+
         if (wordCard.getRussianWord().equals(wordThatNeedsToBeTranslated.getRussianWord())) {
             reactionToTheRightAnswer(wordCard);
             createButtons(view, context);
@@ -489,19 +436,16 @@ public class ProcessOfLearning {
             reWriteWordCardInArrayList(allOfWordsOfDictionary, rightWordCard);
         }
         answeredTrue = true;
-        // currentLearningWords = createCurrentLearningWordsArrayList();
     }
 
 
     private void reactionToTheWrongAnswer(WordCard wrongWordCard, View view, Context context) {
         wrongWordCard.setRightAnswerCount(0);
-        // System.out.println(wrongWordCard.getEnglishWord() + " " + wrongWordCard.getWrongAnswerCount());
         wrongWordCard.setWrongAnswerCount(wrongWordCard.getWrongAnswerCount() + 1);
         wordsDataBaseHelper.changeExistsWord(wrongWordCard);
         reWriteWordCardInArrayList(allOfWordsOfDictionary, wrongWordCard);
         answeredTrue = false;
         createButtons(view, context);
-        // currentLearningWords = createCurrentLearningWordsArrayList();
     }
 
 
@@ -517,16 +461,7 @@ public class ProcessOfLearning {
      */
     public WordCard getWordForLearn(ArrayList<WordCard> learningWordsForButtons) {
         int random = (int) (Math.random() * learningWordsForButtons.size());
-        // int count = 0;
-        return learningWordsForButtons.get(random);
-      /*  for (WordCard wordCard : learningWordsForButtons) {
-            if (count == random) {
-                wordThatNeedsToBeTranslated = wordCard;
-                return wordCard;
-            }
-            count++;
-        }
-        return null;*/
+        return  learningWordsForButtons.get(random);
     }
 
 

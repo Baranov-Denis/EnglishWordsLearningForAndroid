@@ -25,7 +25,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
 
 
     private final static String TAG = "--->>>   ";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     private final Context mContext;
 
@@ -45,11 +45,11 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         return mainDataBase;
     }
 
-    public static WordsDataBaseHelper getWordsDataBase() {
+    public static WordsDataBaseHelper getWordsDataBaseHelper() {
         return wordsDataBaseHelper;
     }
 
-    public static WordsDataBaseHelper getWordsDataBase(Context context) {
+    public static WordsDataBaseHelper getWordsDataBaseHelper(Context context) {
         if (wordsDataBaseHelper == null) {
             wordsDataBaseHelper = new WordsDataBaseHelper(context);
         }

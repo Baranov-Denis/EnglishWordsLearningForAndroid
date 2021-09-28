@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         setOnClickButtons();
         //Загружаем базу данных
         //UserDataBaseHelper.getWordsDataBase(this);
-         WordsDataBaseHelper.getWordsDataBase(this);
+         WordsDataBaseHelper.getWordsDataBaseHelper(this);
 
 
 
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startSettingsActivity(View view) {
+    public void startSettingsActivity(View view) {
         Intent intent = new Intent(this,SettingActivity.class);
         startActivity(intent);
     }
