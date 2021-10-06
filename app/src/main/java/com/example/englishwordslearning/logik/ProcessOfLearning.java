@@ -34,6 +34,10 @@ public class ProcessOfLearning {
      */
     private ArrayList<WordCard> allOfWordsOfDictionary;
 
+    public int getAllOfWordsOfDictionarySize() {
+        return allOfWordsOfDictionary.size();
+    }
+
     private int numberOfUnlearnedWords;
 
     /**
@@ -247,7 +251,7 @@ public class ProcessOfLearning {
             for (WordCard wordCard : allOfWordsOfDictionary) {
                 if (wordCard.nowLearning() > 0 & wordCard.isLearned() == 0) learnList.add(wordCard);
             }
-        }else {
+        } else {
             learnList = new ArrayList<>(currentLearningWords);
         }
 
@@ -280,7 +284,8 @@ public class ProcessOfLearning {
         if (endingWords) {
             String text = "";
 
-            if(numberOfUnlearnedWords > 0) text = "Слова на исходе осталось неизученно : " + numberOfUnlearnedWords;
+            if (numberOfUnlearnedWords > 0)
+                text = "Слова на исходе осталось неизученно : " + numberOfUnlearnedWords;
             else text = "Вы выучили все слова.";
 
             Toast toast = Toast.makeText(mainContext, text, Toast.LENGTH_SHORT);
@@ -290,14 +295,11 @@ public class ProcessOfLearning {
     }
 
 
-
-
     private WordCard getRandomWordCardFromMainDictionary() {
         int random;
         random = (int) (Math.random() * allOfWordsOfDictionary.size());
         return allOfWordsOfDictionary.get(random);
     }
-
 
 
     /**
@@ -325,7 +327,7 @@ public class ProcessOfLearning {
      * В настоящее время на кнопки попадают первые 10 слов из словаря.
      * Необходимо передавать в метод массив изучаемых слов для отображения их на кнопках и дальнейшей работы с ними
      */
-    public void createButtons(View view, Context context) {
+  /*  public void createButtons(View view, Context context) {
 
         LinearLayout ll = (LinearLayout) view.findViewById(R.id.button_layout);
 
@@ -367,6 +369,65 @@ public class ProcessOfLearning {
             });
             myButton.setLayoutParams(layoutParams);
             ll.addView(myButton);
+        }
+
+
+        showWord(wordThatNeedsToBeTranslated.getRussianWord() + "  " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/now " + wordThatNeedsToBeTranslated.nowLearning() + " / " + countOfCurrentLearnWords + " / " + numberOfUnlearnedWords, view);
+    }*/
+    public void createButtons(View view, Context context) {
+
+        //   LinearLayout ll = (LinearLayout) view.findViewById(R.id.button_layout);
+
+        // LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100);
+        // layoutParams.setMargins(15, 0, 15, 30);
+        // ll.removeAllViews();
+        ArrayList<Button> buttons = new ArrayList<>();
+        buttons.add(view.findViewById(R.id.button_1));
+        buttons.add(view.findViewById(R.id.button_2));
+        buttons.add(view.findViewById(R.id.button_3));
+        buttons.add(view.findViewById(R.id.button_4));
+        buttons.add(view.findViewById(R.id.button_5));
+        buttons.add(view.findViewById(R.id.button_6));
+        buttons.add(view.findViewById(R.id.button_7));
+        buttons.add(view.findViewById(R.id.button_8));
+        buttons.add(view.findViewById(R.id.button_9));
+        buttons.add(view.findViewById(R.id.button_10));
+
+
+        allOfWordsOfDictionary = loadWordsDictionary();
+
+        currentLearningWords = createLearnList();
+
+
+        if (answeredTrue) {
+            learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
+            wordThatNeedsToBeTranslated = getWordForLearn(learningWordsForButtons);
+        }
+
+
+        Iterator<WordCard> iterator = learningWordsForButtons.iterator();
+
+
+        for (int i = 0; i < countOfButtons; i++) {
+            Button myButton = buttons.get(i);
+            WordCard tempWordCardForButton = iterator.next();
+            myButton.setText(tempWordCardForButton.getEnglishWord());
+           // myButton.setTextSize(25);
+           //myButton.setPadding(5, 5, 5, 5);
+            myButton.setBackgroundColor(context.getResources().getColor(R.color.gray_light_50));
+            if (!answeredTrue) {
+                myButton.setBackgroundColor(context.getResources().getColor(R.color.red));
+            }
+            if (tempWordCardForButton.getEnglishWord().equals(wordThatNeedsToBeTranslated.getEnglishWord()) && tempWordCardForButton.getRightAnswerCount() == 0) {
+                myButton.setBackgroundColor(context.getResources().getColor(R.color.green));
+            }
+
+            myButton.setOnClickListener(view2 -> {
+                //передаём WordCard который принадлежит нажатой кнопке для проверки
+                onClickButton(tempWordCardForButton, view, context);
+            });
+           // myButton.setLayoutParams(layoutParams);
+           // ll.addView(myButton);
         }
 
 
@@ -461,7 +522,7 @@ public class ProcessOfLearning {
      */
     public WordCard getWordForLearn(ArrayList<WordCard> learningWordsForButtons) {
         int random = (int) (Math.random() * learningWordsForButtons.size());
-        return  learningWordsForButtons.get(random);
+        return learningWordsForButtons.get(random);
     }
 
 

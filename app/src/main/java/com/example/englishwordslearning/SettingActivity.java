@@ -65,9 +65,13 @@ public class SettingActivity extends AppCompatActivity {
         seekBarOfNumber.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int count, boolean b) {
+                if(mainInterface.getNumberOfAllWords() < count) {
+                    count = mainInterface.getNumberOfAllWords();
+                }
                 mainInterface.setNumberOfCurrentLearnWords(count);
                 textViewOfNumber.setText(String.valueOf(count));
                 saveSettings();
+
             }
 
             @Override

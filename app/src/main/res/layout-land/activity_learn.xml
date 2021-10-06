@@ -17,34 +17,26 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:titleTextColor="@color/white" />
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
 
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/target_word"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="10dp"
-                android:text="@string/target_word"
-                android:textSize="20sp"/>
-
             <Button
                 android:id="@+id/button_1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
 
             <Button
                 android:id="@+id/button_2"
@@ -52,7 +44,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
 
             <Button
                 android:id="@+id/button_3"
@@ -60,7 +52,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp" />
+                android:layout_marginVertical="5dp"
+                />
 
             <Button
                 android:id="@+id/button_4"
@@ -68,9 +61,30 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
 
 
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/target_word"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:text="@string/target_word"
+                android:textSize="20sp"/>
 
             <Button
                 android:id="@+id/button_5"
@@ -78,16 +92,24 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
             <Button
                 android:id="@+id/button_6"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
 
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/button_7"
@@ -95,7 +117,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
 
             <Button
                 android:id="@+id/button_8"
@@ -103,7 +125,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
 
             <Button
                 android:id="@+id/button_9"
@@ -111,7 +133,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="1dp"/>
+                android:layout_marginVertical="5dp"/>
 
             <Button
                 android:id="@+id/button_10"
@@ -119,14 +141,23 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginVertical="5dp"/>
 
 
         </LinearLayout>
 
 
 
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:id="@+id/button_layout">
+
+
+    </LinearLayout>
 
 </LinearLayout>

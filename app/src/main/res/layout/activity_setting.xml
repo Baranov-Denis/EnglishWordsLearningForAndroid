@@ -73,7 +73,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="10dp"
                 android:background="@android:drawable/divider_horizontal_textfield"
-                android:max="30"
+                android:max="49"
                 android:scrollbarSize="1dp"
                 android:soundEffectsEnabled="false"
                 android:thumb="@android:drawable/ic_notification_overlay" />
@@ -132,7 +132,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="10dp"
                 android:background="@android:drawable/divider_horizontal_textfield"
-                android:max="30"
+                android:max="50"
                 android:min="10"
                 android:scrollbarSize="1dp"
                 android:soundEffectsEnabled="true"

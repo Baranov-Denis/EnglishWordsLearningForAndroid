@@ -122,4 +122,7 @@ public class MainInterface {
     }
 
 
+    public int getNumberOfAllWords() {
+        return processOfLearning.getAllOfWordsOfDictionarySize();
+    }
 }
