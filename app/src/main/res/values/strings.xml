@@ -11,5 +11,7 @@
     <string name="target_word">word</string>
     <string name="choose_count_of_learning_words">Установите количество слов для изучения</string>
     <string name="choose_count_of_repeat_words">Установите количество повторений слова</string>
+    <string name="choose_type_of_learn_1">Русский - Английский</string>
+    <string name="choose_type_of_learn_2">Английский - Русский</string>
     <string name="text">Текст</string>
 </resources>

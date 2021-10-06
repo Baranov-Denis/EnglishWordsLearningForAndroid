@@ -1,10 +1,12 @@
 package com.example.englishwordslearning;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -26,15 +28,11 @@ public class LearnActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn);
-        Log.i("------------ >> " , "start");
 
         mainInterface = MainInterface.getMainInterface(this);
 
-      //  mainInterface.startLearning(this);
-
         mainInterface.createButtonsForLearning(findViewById(R.id.learn_activity),this);
 
-        mainInterface.showWordForLearn(findViewById(R.id.learn_activity));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,4 +41,10 @@ public class LearnActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
     }
+/*
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mainInterface.getSaveList();
+    }*/
 }
