@@ -2,6 +2,7 @@ package com.example.englishwordslearning.logik;
 
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.util.Objects;
@@ -86,6 +87,16 @@ public class WordCard {
         this.isLearned = isLearned;
     }
 
+    public WordCard(String allFieldsInOneString){
+        String[] allStrings = allFieldsInOneString.split(",");
+        this.englishWord = allStrings[0];
+        this.russianWord = allStrings[1];
+        this.rightAnswerCount = Integer.parseInt(allStrings[2]);
+        this.wrongAnswerCount = Integer.parseInt(allStrings[3]);
+        this.nowLearning = Integer.parseInt(allStrings[4]);
+        this.isLearned = Integer.parseInt(allStrings[5]);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,14 +113,8 @@ public class WordCard {
     }
 
     @Override
+    @NonNull
     public String toString() {
-        return "WordCard{" +
-                "englishWord='" + englishWord + '\'' +
-                ", russianWord='" + russianWord + '\'' +
-                ", rightAnswerCount=" + rightAnswerCount +
-                ", wrongAnswerCount=" + wrongAnswerCount +
-                ", nowLearning=" + nowLearning +
-                ", isLearned=" + isLearned +
-                '}';
+        return  englishWord + "," + russianWord + "," + rightAnswerCount + "," + wrongAnswerCount + "," + nowLearning + "," + isLearned;
     }
 }
