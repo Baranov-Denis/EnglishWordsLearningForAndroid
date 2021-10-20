@@ -3,9 +3,9 @@
     <style name="Theme.EnglishWordsLearning" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <!-- Buttons color -->
-        <item name="colorPrimary">@color/gray_dark_20</item>
+        <item name="colorPrimary">@color/yellow</item>
         <!--Верхняя панель -->
-        <item name="colorPrimaryVariant">@color/gray_light_50</item>
+        <item name="colorPrimaryVariant">@color/yellow_dark</item>
         <!--        Font Color-->
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -14,6 +14,14 @@
         <item name="colorOnSecondary">@color/green</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="spinnerTheme">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@color/yellow</item>
+        <item name="android:textSize">20sp</item>
+
     </style>
 </resources>

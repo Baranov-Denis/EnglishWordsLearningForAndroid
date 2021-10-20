@@ -27,6 +27,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+
             <TextView
                 android:id="@+id/target_word"
                 android:layout_width="match_parent"
@@ -36,9 +37,11 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="10dp"
                 android:text="@string/target_word"
-                android:textSize="20sp"/>
+                android:textStyle="bold"
+                android:textSize="25sp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -46,7 +49,8 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="1dp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -54,7 +58,8 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="1dp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_3"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -62,7 +67,8 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="1dp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_4"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -72,14 +78,17 @@
 
 
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_5"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="1dp"/>
-            <Button
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_6"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -89,7 +98,8 @@
 
 
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_7"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -97,7 +107,8 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="1dp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_8"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -105,7 +116,8 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="1dp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_9"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -113,7 +125,8 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="1dp"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
+                android:background="@drawable/button_for_learn_background"
                 android:id="@+id/button_10"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

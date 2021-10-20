@@ -142,34 +142,41 @@
         </LinearLayout>
 
 
-
         <LinearLayout
-        android:id="@+id/setTypeOfLearning"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="0dp"
-        android:background="@color/yellow"
-        android:orientation="horizontal">
+            android:id="@+id/setTypeOfLearningSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/yellow"
+            android:orientation="vertical">
 
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch1"
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/text"
-                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
                 android:textSize="16sp"
-                android:layout_margin="10dp"
-                 />
+                android:text="Выбирай мудро!!!"
+                android:textColor="@color/black" />
+
+
+
+            <Spinner
+
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/typesOfLearn"
+                android:theme="@style/spinnerTheme" />
 
 
         </LinearLayout>
-
-
 
 
     </LinearLayout>

@@ -5,13 +5,19 @@
     <string name="settings_name">Настройки</string>
     <string name="enter_english_word">Введите английское слово:</string>
     <string name="enter_russian_word">Введите русское слово:</string>
-    <string name="save">Сохранить</string>
-    <string name="delete">Удалить</string>
-    <string name="reset">Сбросить</string>
+    <string name="save">Сохранить слово</string>
+    <string name="delete">Удалить слово</string>
+    <string name="reset">Сбросить прогресс</string>
     <string name="target_word">word</string>
     <string name="choose_count_of_learning_words">Установите количество слов для изучения</string>
     <string name="choose_count_of_repeat_words">Установите количество повторений слова</string>
     <string name="choose_type_of_learn_1">Русский - Английский</string>
     <string name="choose_type_of_learn_2">Английский - Русский</string>
     <string name="text">Текст</string>
+
+    <string-array name="typesOfLearn">
+        <item>Русский - Английский</item>
+        <item>Английский - Русский</item>
+        <item>Случайный порядок</item>
+    </string-array>
 </resources>

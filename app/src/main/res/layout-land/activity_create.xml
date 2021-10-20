@@ -134,7 +134,6 @@
             android:id="@+id/list_of_words"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:choiceMode="singleChoice"
             >
 
 
@@ -145,74 +144,49 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="bottom"
-        android:padding="5dp"
-        android:layout_weight="100"
         android:background="@color/gray_light_50">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/enter_english_word"
-            android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/edit_text_english_word"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:textSize="20sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/enter_russian_word"
-            android:textSize="20sp"/>
 
-        <EditText
-            android:id="@+id/edit_text_russian_word"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:textSize="20sp" />
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/button_for_reset_all_progress"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
                 android:layout_marginHorizontal="5dp"
                 android:text="@string/reset"
-                android:textSize="12sp"/>
+                android:textSize="15sp"/>
 
             <Button
                 android:id="@+id/button_for_delete_word"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
                 android:layout_marginHorizontal="5dp"
                 android:text="@string/delete"
-                android:textSize="12sp"/>
+                android:textSize="15sp"/>
 
             <Button
                 android:id="@+id/button_for_save_word"
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginHorizontal="5dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
                 android:text="@string/save"
-                android:textSize="12sp"/>
+                android:textSize="15sp"/>
 
         </LinearLayout>
 

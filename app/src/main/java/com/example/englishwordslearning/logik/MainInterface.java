@@ -6,8 +6,6 @@ import android.view.View;
 
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 
-import java.util.ArrayList;
-
 public class MainInterface {
 
     private static MainInterface mainInterface;
@@ -128,11 +126,11 @@ public class MainInterface {
         return processOfLearning.getAllOfWordsOfDictionarySize();
     }
 
-    public boolean isTypeOfLearn() {
-        return processOfLearning.isTypeOfLearn();
+    public int isTypeOfLearn() {
+        return processOfLearning.getTypeOfLearn();
     }
 
-    public void setTypeOfLearn(boolean isChecked) {
+    public void setTypeOfLearn(int isChecked) {
         processOfLearning.setTypeOfLearn(isChecked);
     }
 

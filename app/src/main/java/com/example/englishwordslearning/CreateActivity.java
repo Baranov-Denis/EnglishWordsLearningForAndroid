@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 import com.example.englishwordslearning.logik.MainInterface;
@@ -24,6 +26,8 @@ public class CreateActivity extends AppCompatActivity {
     private MainInterface mainInterface;
     //Идентификационный номер слова из общего списка слов после нажатия на него в списке
     private long selectedWord;
+
+    Button deleteButton;
 
     public long getSelectedWord() {
         return selectedWord;
@@ -91,10 +95,10 @@ public class CreateActivity extends AppCompatActivity {
         //Тоже самое для русского слова
         EditText newRussianWord = (EditText) findViewById(R.id.edit_text_russian_word);
         String russian = newRussianWord.getText().toString();
-        System.out.println("__________________________-------------++++++++++++++++++++++++++++---------------______________________________");
+
         //Вызываем сохранение метода в базу данных
         mainInterface.addNewWord(newEnglishWord, russian,view);
-        System.out.println("__________________________----------------------------______________________________");
+
         // Этот код обновляет текущую activity без анимации
         finish();
         overridePendingTransition(0, 0);
@@ -139,12 +143,22 @@ public class CreateActivity extends AppCompatActivity {
 
         //Подключаем адаптер
         wordsList.setAdapter(cursorAdapter);
+        wordsList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
 
 
         AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 setSelectedWord(id);
+                deleteButton = findViewById(R.id.button_for_delete_word);
+                for(int a = 0; a < parent.getChildCount(); a++)
+                {
+                    parent.getChildAt(a).setBackgroundColor(Color.TRANSPARENT);
+                }
+
+                view.setBackgroundColor(getResources().getColor(R.color.yellow_dark));
+                deleteButton.setBackgroundColor(getResources().getColor(R.color.red));
             }
         };
 
