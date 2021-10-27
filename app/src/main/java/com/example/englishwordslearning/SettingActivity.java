@@ -35,13 +35,7 @@ public class SettingActivity extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         //Переназначаем действие кнопки вверх для получения анимации перехода
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //if you want to go one activity back then put onBackPressed() method
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
 
         setSpinner();
@@ -86,9 +80,12 @@ public class SettingActivity extends AppCompatActivity {
         final Animation hideToLeft = AnimationUtils.loadAnimation(this, R.anim.hide_to_left);
         final Animation hideToRight = AnimationUtils.loadAnimation(this, R.anim.hide_to_right);
 
-        setCountOfRepeats.startAnimation(hideToRight);
-        setCountOfWords.startAnimation(hideToLeft);
-        setTypeOfLearningSpinner.startAnimation(hideToRight);
+        setCountOfRepeats.startAnimation(hideToLeft);
+        setCountOfWords.startAnimation(hideToRight);
+        setTypeOfLearningSpinner.startAnimation(hideToLeft);
+
+
+
     }
 
     private void setSeekBar() {
@@ -152,7 +149,7 @@ public class SettingActivity extends AppCompatActivity {
 
     private void setSpinner() {
         String[] data = {"Русский - Английский", "Английский - Русский", "Случайный порядок"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.my_spinner,data);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.my_spinner,data);
         adapter.setDropDownViewResource(R.layout.my_spinner_drop);
         Spinner spinner = findViewById(R.id.spinner);
 
@@ -165,6 +162,7 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemPosition, long l) {
                 mainInterface.setTypeOfLearn(selectedItemPosition);
+                mainInterface.updateButtons();
                 saveSettings();
             }
 

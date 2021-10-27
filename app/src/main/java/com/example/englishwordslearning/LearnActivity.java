@@ -3,6 +3,7 @@ package com.example.englishwordslearning;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +11,14 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.englishwordslearning.logik.MainInterface;
 
 public class LearnActivity extends AppCompatActivity {
 
     private MainInterface mainInterface;
+    private TextView textView;
     private Button button1;
     private Button button2;
     private Button button3;
@@ -45,24 +48,15 @@ public class LearnActivity extends AppCompatActivity {
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         //Переназначаем действие кнопки вверх для получения анимации перехода
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //if you want to go one activity back then put onBackPressed() method
-                onBackPressed();
-            }
-        });
-
-
-
-
-
-
+        toolbar.setNavigationOnClickListener(view ->   onBackPressed());
     }
+
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        textView = findViewById(R.id.target_word);
         button1 = findViewById(R.id.button_1);
         button2 = findViewById(R.id.button_2);
         button3 = findViewById(R.id.button_3);
@@ -74,9 +68,11 @@ public class LearnActivity extends AppCompatActivity {
         button9 = findViewById(R.id.button_9);
         button0 = findViewById(R.id.button_10);
 
+        final Animation fromUp = AnimationUtils.loadAnimation(this, R.anim.from_up_to_down);
         final Animation rightToLeft = AnimationUtils.loadAnimation(this, R.anim.from_right_to_left);
         final Animation leftToRight = AnimationUtils.loadAnimation(this, R.anim.from_left_to_right);
 
+        textView.startAnimation(fromUp);
         button1.startAnimation(rightToLeft);
         button2.startAnimation(leftToRight);
         button3.startAnimation(rightToLeft);
@@ -93,10 +89,11 @@ public class LearnActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-
+        final Animation hideToUp = AnimationUtils.loadAnimation(this, R.anim.hide_to_up);
         final Animation hideToRight = AnimationUtils.loadAnimation(this, R.anim.hide_to_right);
         final Animation hideToLeft = AnimationUtils.loadAnimation(this, R.anim.hide_to_left);
 
+        textView.startAnimation(hideToUp);
         button1.startAnimation(hideToRight);
         button2.startAnimation(hideToLeft);
         button3.startAnimation(hideToRight);

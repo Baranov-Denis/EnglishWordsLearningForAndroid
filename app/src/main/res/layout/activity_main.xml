@@ -12,7 +12,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/yellow_dark">
+    android:background="@color/yellow_dark"
+    >
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/learn_button"

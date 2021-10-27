@@ -134,4 +134,7 @@ public class MainInterface {
         processOfLearning.setTypeOfLearn(isChecked);
     }
 
+    public void updateButtons() {
+        processOfLearning.updateButtons();
+    }
 }

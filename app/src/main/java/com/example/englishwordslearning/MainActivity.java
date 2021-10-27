@@ -1,16 +1,18 @@
 package com.example.englishwordslearning;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Toast;
 
 //import com.example.englishwordslearning.database.DatabaseHelper;
 //import com.example.englishwordslearning.database.UserDataBaseHelper;
@@ -28,8 +30,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String APP_PREFERENCES = "mySettings";
 
 
-    private WordsDataBaseHelper mDBHelper;
-    private SQLiteDatabase mDb;
+    /**
+     * Числово необходимое для подсчёта нажатий кнопки назад
+     * при первом нажатии появляется Toast с предупреждением
+     * при втором нажатии выход на рабочий стол
+     */
+    private int exitCounter = 0;
 
 
     public static SharedPreferences getMySharedPreference() {
@@ -55,29 +61,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_main);
 
-
-
-
-        //  createActivityButton.startAnimation(animUp);
         //Подключение кнопок
         setOnClickButtons();
         //Загружаем базу данных
-        //UserDataBaseHelper.getWordsDataBase(this);
         WordsDataBaseHelper.getWordsDataBaseHelper(this);
+
+
 
 
         //Создает экземпляр MainInterface
         MainInterface.getMainInterface(this);
         mainInterface = MainInterface.getMainInterface();
         loadSettings();
-
 
 
     }
@@ -96,92 +98,79 @@ public class MainActivity extends AppCompatActivity {
         learnActivityButton.startAnimation(hideToLeft);
         createActivityButton.startAnimation(hideToRight);
         settingsActivityButton.startAnimation(hideToLeft);
+
     }
 
 
-   @Override
+    @Override
     protected void onResume() {
         super.onResume();
-       Button learnActivityButton = findViewById(R.id.learn_button);
-       Button createActivityButton = findViewById(R.id.create_button);
-       Button settingsActivityButton = findViewById(R.id.settings_button);
-
-       final Animation rightToLeft = AnimationUtils.loadAnimation(this, R.anim.from_right_to_left);
-       final Animation leftToRight = AnimationUtils.loadAnimation(this, R.anim.from_left_to_right);
-
-
-       learnActivityButton.startAnimation(rightToLeft);
-       createActivityButton.startAnimation(leftToRight);
-       settingsActivityButton.startAnimation(rightToLeft);
-    }
-
-    public void setOnClickButtons() {
-
+        exitCounter = 0;
         Button learnActivityButton = findViewById(R.id.learn_button);
         Button createActivityButton = findViewById(R.id.create_button);
         Button settingsActivityButton = findViewById(R.id.settings_button);
 
-        createActivityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startCreateActivity(view);
-            }
-
-        });
-
-        learnActivityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startLearningActivity(view);
-            }
-        });
-        settingsActivityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startSettingsActivity(view);
-            }
-        });
 
 
+        final Animation wrongAnim = AnimationUtils.loadAnimation(this, R.anim.wrong_answer_animation_button);
+        learnActivityButton.startAnimation(wrongAnim);
+        learnActivityButton.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.left_main_button_background,null));
+
+        final Animation rightToLeft = AnimationUtils.loadAnimation(this, R.anim.from_right_to_left);
+        final Animation leftToRight = AnimationUtils.loadAnimation(this, R.anim.from_left_to_right);
+
+
+        learnActivityButton.startAnimation(rightToLeft);
+        createActivityButton.startAnimation(leftToRight);
+        settingsActivityButton.startAnimation(rightToLeft);
     }
 
+    public void setOnClickButtons() {
+        Button learnActivityButton = findViewById(R.id.learn_button);
+        Button createActivityButton = findViewById(R.id.create_button);
+        Button settingsActivityButton = findViewById(R.id.settings_button);
+
+        createActivityButton.setOnClickListener(this::startCreateActivity);
+        learnActivityButton.setOnClickListener(this::startLearningActivity);
+        settingsActivityButton.setOnClickListener(this::startSettingsActivity);
+    }
 
 
     public void startSettingsActivity(View view) {
         Intent intent = new Intent(this, SettingActivity.class);
-
-       Button settingsActivityButton = findViewById(R.id.settings_button);
-        Button learnActivityButton = findViewById(R.id.learn_button);
-        Button createActivityButton = findViewById(R.id.create_button);
-       Animation alfa = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
-
-      //  createActivityButton.startAnimation(alfa);
-      //  learnActivityButton.startAnimation(alfa);
-      //  settingsActivityButton.startAnimation(alfa);
         startActivity(intent);
-        overridePendingTransition( R.anim.fade_in,R.anim.fade_out);
-
-
-      /*  new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(intent);
-            }
-        }, 100);
-*/
-
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     public void startCreateActivity(View view) {
         Intent intent = new Intent(this, CreateActivity.class);
         startActivity(intent);
-        overridePendingTransition( R.anim.fade_in,R.anim.fade_out);
-
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     public void startLearningActivity(View view) {
         Intent intent = new Intent(this, LearnActivity.class);
         startActivity(intent);
-        overridePendingTransition( R.anim.fade_in,R.anim.fade_out);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
+
+
+    @Override
+    public void onBackPressed() {
+        if (exitCounter == 1) {
+            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+            homeIntent.addCategory(Intent.CATEGORY_HOME);
+            homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(homeIntent);
+            onDestroy();
+            exitCounter = 0;
+        } else {
+            Toast exitToast = Toast.makeText(getApplicationContext(), R.string.press_one_more_time, Toast.LENGTH_SHORT);
+            exitToast.show();
+            exitCounter++;
+        }
+
+    }
+
+
 }

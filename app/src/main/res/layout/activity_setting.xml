@@ -18,19 +18,34 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/gray_light_50"
+            android:background="@color/yellow_dark"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:titleTextColor="@color/white" />
 
+
+
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/setCountOfRepeats"
+            android:background="@drawable/left_main_button_background"
+            android:padding="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginLeft="-15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginBottom="0dp"
-            android:background="@color/yellow"
+
+
             android:orientation="vertical">
 
             <LinearLayout
@@ -62,8 +77,10 @@
 
             </LinearLayout>
 
+
             <SeekBar
                 android:id="@+id/seek_bar_for_count_of_repeat_words"
+                style="@style/Widget.AppCompat.SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -72,24 +89,42 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="10dp"
-                android:background="@android:drawable/divider_horizontal_textfield"
                 android:max="49"
                 android:scrollbarSize="1dp"
                 android:soundEffectsEnabled="false"
-                android:thumb="@android:drawable/ic_notification_overlay" />
+                android:thumb="@android:drawable/ic_menu_edit" />
 
 
         </LinearLayout>
 
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/setCountOfWords"
+            android:background="@drawable/right_main_button_background"
+            android:padding="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="0dp"
-            android:background="@color/yellow"
+            android:layout_marginRight="-15dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -131,26 +166,39 @@
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="10dp"
-                android:background="@android:drawable/divider_horizontal_textfield"
                 android:max="50"
                 android:min="10"
                 android:scrollbarSize="1dp"
                 android:soundEffectsEnabled="true"
-                android:thumb="@android:drawable/presence_online" />
+                android:thumb="@android:drawable/ic_menu_edit" />
 
 
         </LinearLayout>
+        </LinearLayout>
+
+
+
+
+
+
+
 
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+        <LinearLayout
             android:id="@+id/setTypeOfLearningSpinner"
+            android:background="@drawable/left_main_button_background"
+            android:padding="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginLeft="-15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginBottom="0dp"
-            android:background="@color/yellow"
             android:orientation="vertical">
 
 
@@ -176,6 +224,7 @@
                 android:theme="@style/spinnerTheme" />
 
 
+        </LinearLayout>
         </LinearLayout>
 
 

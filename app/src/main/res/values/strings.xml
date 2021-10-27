@@ -13,6 +13,7 @@
     <string name="choose_count_of_repeat_words">Установите количество повторений слова</string>
     <string name="choose_type_of_learn_1">Русский - Английский</string>
     <string name="choose_type_of_learn_2">Английский - Русский</string>
+    <string name="press_one_more_time">Для выхода нажмите ещё раз.</string>
     <string name="text">Текст</string>
 
     <string-array name="typesOfLearn">

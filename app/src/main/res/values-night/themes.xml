@@ -24,4 +24,9 @@
         <item name="android:textSize">20sp</item>
 
     </style>
+
+
+    <style name="splashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
 </resources>
