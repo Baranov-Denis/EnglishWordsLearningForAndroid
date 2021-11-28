@@ -18,6 +18,7 @@ import android.widget.Toast;
 //import com.example.englishwordslearning.database.UserDataBaseHelper;
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 import com.example.englishwordslearning.logik.MainInterface;
+import com.example.englishwordslearning.logik.ProcessOfLearning;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String COUNT_OF_REPEAT = "count_of_repeat";
     public static final String COUNT_OF_NUMBER_CURRENT_WORDS = "count_of_number_current_words";
     public static final String TYPE_OF_LEARN_WORDS = "type_of_learn_words";
+    public static final String CURRENT_TABLE_NAME = "current_table_name";
     public static final String APP_PREFERENCES = "mySettings";
 
 
@@ -56,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         if (mySharedPreference.contains(TYPE_OF_LEARN_WORDS)) {
 
             mainInterface.setTypeOfLearn(mySharedPreference.getInt(TYPE_OF_LEARN_WORDS, 0));
+        }
+
+        if (mySharedPreference.contains(CURRENT_TABLE_NAME)){
+            ProcessOfLearning.setCurrentTableNum(mySharedPreference.getInt(CURRENT_TABLE_NAME,0));
         }
 
     }

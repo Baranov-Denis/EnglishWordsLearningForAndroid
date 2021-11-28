@@ -16,23 +16,20 @@ import java.io.OutputStream;
 public class ExternalDatabaseHelper extends SQLiteOpenHelper {
 
     /**
-     *
      * Данная база данных используется для загрузки внешней базы
      * После этого данную базу нужно загрузить в основную базу
-     *
-     *         ExternalDatabaseHelper externalDatabaseHelper = new ExternalDatabaseHelper(context);
-     *         SQLiteDatabase externalDatabase = externalDatabaseHelper.getExternalDatabase();
-     *         Cursor wordCursor = externalDatabase.query("words", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
-     *         while (wordCursor.moveToNext()) {
-     *             Проверка и вставка
-     *         }
-     *         wordCursor.close();
-     *
-     *
+     * <p>
+     * ExternalDatabaseHelper externalDatabaseHelper = new ExternalDatabaseHelper(context);
+     * SQLiteDatabase externalDatabase = externalDatabaseHelper.getExternalDatabase();
+     * Cursor wordCursor = externalDatabase.query("words", new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+     * while (wordCursor.moveToNext()) {
+     * Проверка и вставка
+     * }
+     * wordCursor.close();
+     * <p>
+     * <p>
      * Нужно проверить каждое слово из этой базы и добавлять только те слова, которые отсутствуют
      * в основной базе
-     *
-     *
      */
     private static final String TAG = "External_log -> ";
     private static final int DB_VERSION = 1;
@@ -64,22 +61,18 @@ public class ExternalDatabaseHelper extends SQLiteOpenHelper {
         copyDataBase();
 
         openDataBase();
-
-       // this.getReadableDatabase();
     }
 
 
-
     /**
-     *   copyDataBase                                                                   copyDataBase
+     * copyDataBase                                                                   copyDataBase
      */
     private void copyDataBase() {
-       // File dbFile = new File(DB_PATH + DB_NAME);
-            try {
-                copyDBFile();
-            } catch (IOException mIOException) {
-                throw new Error("ErrorCopyingDataBase");
-            }
+        try {
+            copyDBFile();
+        } catch (IOException mIOException) {
+            throw new Error("ErrorCopyingDataBase");
+        }
     }
 
     private boolean checkDataBase() {
@@ -89,7 +82,6 @@ public class ExternalDatabaseHelper extends SQLiteOpenHelper {
 
     private void copyDBFile() throws IOException {
         InputStream mInput = context.getAssets().open(DB_NAME);
-        //InputStream mInput = mContext.getResources().openRawResource(R.raw.info);
         OutputStream mOutput = new FileOutputStream(DB_PATH + DB_NAME);
         byte[] mBuffer = new byte[1024];
         int mLength;
@@ -102,7 +94,7 @@ public class ExternalDatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     *   openDataBase                                                                   openDataBase
+     * openDataBase                                                                   openDataBase
      */
     public boolean openDataBase() throws SQLException {
         externalDatabase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
@@ -111,32 +103,19 @@ public class ExternalDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-     /*  try {
-            updateDataBase();
-        } catch (Exception e) {
-            Log.i(TAG, "Update fail");
-        }*/
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-      /*  try {
-            updateDataBase();
-        } catch (Exception e) {
-            Log.i(TAG, "Update fail");
-        }*/
     }
 
     public void updateDataBase() throws IOException {
-
-        Log.i(TAG,"sssssssssssssssssssssssssssssssssssssss");
-            File dbFile = new File(DB_PATH + DB_NAME);
-            if (dbFile.exists())
-                dbFile.delete();
-
-            copyDataBase();
+        Log.i(TAG, "sssssssssssssssssssssssssssssssssssssss");
+        File dbFile = new File(DB_PATH + DB_NAME);
+        if (dbFile.exists())
+            dbFile.delete();
+        copyDataBase();
     }
 }

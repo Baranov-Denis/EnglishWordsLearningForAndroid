@@ -6,26 +6,39 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.englishwordslearning.database.WordsDataBaseHelper;
 import com.example.englishwordslearning.logik.MainInterface;
+import com.example.englishwordslearning.logik.ProcessOfLearning;
 
 public class SettingActivity extends AppCompatActivity {
     private MainInterface mainInterface;
+
+    LinearLayout setCountOfRepeats;
+    LinearLayout setCountOfWords;
+    LinearLayout setTypeOfLearningSpinner;
+    LinearLayout setTable;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
+        setCountOfWords = findViewById(R.id.setCountOfWords);
+        setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
+        setTable = findViewById(R.id.setTable);
+
         setContentView(R.layout.activity_setting);
         mainInterface = MainInterface.getMainInterface(this);
         setSeekBar();
@@ -38,19 +51,8 @@ public class SettingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
 
-        setSpinner();
-
-      /*  LinearLayout setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
-        LinearLayout setCountOfWords = findViewById(R.id.setCountOfWords);
-        LinearLayout setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
-
-        final Animation rightToLeft = AnimationUtils.loadAnimation(this, R.anim.from_right_to_left);
-        final Animation leftToRight = AnimationUtils.loadAnimation(this, R.anim.from_left_to_right);
-
-
-        setCountOfRepeats.startAnimation(rightToLeft);
-        setCountOfWords.startAnimation(leftToRight);
-        setTypeOfLearningSpinner.startAnimation(rightToLeft);*/
+        setModeSpinner();
+        setTableSpinner();
 
     }
 
@@ -58,9 +60,10 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        LinearLayout setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
-        LinearLayout setCountOfWords = findViewById(R.id.setCountOfWords);
-        LinearLayout setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
+         setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
+         setCountOfWords = findViewById(R.id.setCountOfWords);
+         setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
+         setTable = findViewById(R.id.setTable);
 
         final Animation rightToLeft = AnimationUtils.loadAnimation(this, R.anim.from_right_to_left);
         final Animation leftToRight = AnimationUtils.loadAnimation(this, R.anim.from_left_to_right);
@@ -68,14 +71,16 @@ public class SettingActivity extends AppCompatActivity {
         setCountOfRepeats.startAnimation(rightToLeft);
         setCountOfWords.startAnimation(leftToRight);
         setTypeOfLearningSpinner.startAnimation(rightToLeft);
+        setTable.startAnimation(leftToRight);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        LinearLayout setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
-        LinearLayout setCountOfWords = findViewById(R.id.setCountOfWords);
-        LinearLayout setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
+         setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
+        setCountOfWords = findViewById(R.id.setCountOfWords);
+         setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
+        setTable = findViewById(R.id.setTable);
 
         final Animation hideToLeft = AnimationUtils.loadAnimation(this, R.anim.hide_to_left);
         final Animation hideToRight = AnimationUtils.loadAnimation(this, R.anim.hide_to_right);
@@ -83,7 +88,7 @@ public class SettingActivity extends AppCompatActivity {
         setCountOfRepeats.startAnimation(hideToLeft);
         setCountOfWords.startAnimation(hideToRight);
         setTypeOfLearningSpinner.startAnimation(hideToLeft);
-
+        setTable.startAnimation(hideToRight);
 
 
     }
@@ -147,12 +152,11 @@ public class SettingActivity extends AppCompatActivity {
     }
 
 
-    private void setSpinner() {
+    private void setModeSpinner() {
         String[] data = {"Русский - Английский", "Английский - Русский", "Случайный порядок"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.my_spinner,data);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.my_spinner, data);
         adapter.setDropDownViewResource(R.layout.my_spinner_drop);
-        Spinner spinner = findViewById(R.id.spinner);
-
+        Spinner spinner = findViewById(R.id.modeSpinner);
         spinner.setAdapter(adapter);
 
         spinner.setSelection(mainInterface.isTypeOfLearn());
@@ -172,48 +176,41 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-
-        //  spinner.setAdapter(adapter);
     }
 
-  /*  private int getSpinnerValue(){
-        if(mainInterface.isTypeOfLearn()) {
-            return 0;
-        }else if(!mainInterface.isTypeOfLearn()) {
-            return 1;
-        }
-        return 2;
-    }
-*/
 
-/*
-    private void setSwitch() {
+    private void setTableSpinner() {
+        String[] data = WordsDataBaseHelper.getTableNamesList().toArray(new String[0]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.my_spinner, data);
+        adapter.setDropDownViewResource(R.layout.my_spinner_drop);
+        Spinner spinner = findViewById(R.id.tableSpinner);
 
-        SwitchCompat switch1 = findViewById(R.id.switch1);
-        setSwitchText(switch1);
-        switch1.setChecked(mainInterface.isTypeOfLearn());
-        switch1.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mainInterface.setTypeOfLearn(isChecked);
-            setSwitchText(switch1);
-            saveSettings();
+        spinner.setAdapter(adapter);
+
+        spinner.setSelection(ProcessOfLearning.getCurrentTableNum());
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemPosition, long l) {
+                ProcessOfLearning.setCurrentTableNum(selectedItemPosition);
+                saveSettings();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
         });
 
     }
-
-    private void setSwitchText(SwitchCompat switch1){
-        if(mainInterface.isTypeOfLearn()) {
-            switch1.setText(R.string.choose_type_of_learn_1);
-        }else {
-            switch1.setText(R.string.choose_type_of_learn_2);
-        }
-    }
-*/
 
     private void saveSettings() {
         SharedPreferences.Editor editor = MainActivity.getMySharedPreference().edit();
         editor.putInt(MainActivity.COUNT_OF_REPEAT, mainInterface.getCountOfRepeatWord());
         editor.putInt(MainActivity.COUNT_OF_NUMBER_CURRENT_WORDS, mainInterface.getTheNumberOfWordsBeingStudied());
         editor.putInt(MainActivity.TYPE_OF_LEARN_WORDS, mainInterface.isTypeOfLearn());
+        editor.putInt(MainActivity.CURRENT_TABLE_NAME, ProcessOfLearning.getCurrentTableNum());
         editor.apply();
     }
 
@@ -221,6 +218,6 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        SettingActivity.this.overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
+        SettingActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 }

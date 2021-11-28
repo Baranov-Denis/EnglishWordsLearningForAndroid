@@ -117,6 +117,10 @@ public class MainInterface {
         return processOfLearning.getWordThatNeedsToBeTranslated();
     }
 
+    public String getCurrentTableName(){
+        return processOfLearning.getCurrentTableName();
+    }
+
 
     public void startLearning(Context context) {
     }

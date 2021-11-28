@@ -36,6 +36,23 @@ public class ProcessOfLearning {
     private int typeOfLearnFinal = 0;
 
 
+    private static int currentTableNum;
+
+    public static int getCurrentTableNum() {
+        return currentTableNum;
+    }
+
+    public static void setCurrentTableNum(int currentTableNum) {
+        ProcessOfLearning.currentTableNum = currentTableNum;
+        currentTableName = WordsDataBaseHelper.getTableNamesList().get(currentTableNum);
+    }
+
+    public static String currentTableName;
+
+    public String getCurrentTableName() {
+        return currentTableName;
+    }
+
     /**
      * typeOfLearn создан для изменения
      */
@@ -177,8 +194,10 @@ public class ProcessOfLearning {
      */
     private ProcessOfLearning(Context context) {
         this.mainContext = context;
-        wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBaseHelper();
+        wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBaseHelper(context);
         wordsDatabase = wordsDataBaseHelper.getReadableDatabase();
+
+        currentTableName = WordsDataBaseHelper.getTableNamesList().get(currentTableNum);
         allOfWordsOfDictionary = loadWordsDictionary();
 
 
@@ -193,7 +212,7 @@ public class ProcessOfLearning {
     private ArrayList<WordCard> loadWordsDictionary() {
         ArrayList<WordCard> allWords = new ArrayList<>();
         numberOfUnlearnedWords = 0;
-        Cursor wordCursor = wordsDatabase.query(WordsDataBaseHelper.getTableName(), null, null, null, null, null, "ENGLISH_WORD");
+        Cursor wordCursor = wordsDatabase.query(currentTableName, null, null, null, null, null, "ENGLISH_WORD");
         while (wordCursor.moveToNext()) {
             if (wordCursor.getInt(6) == 0) numberOfUnlearnedWords++;
             allWords.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
@@ -232,7 +251,7 @@ public class ProcessOfLearning {
      * @param russianWord русское слово
      */
     public void addNewWord(String EnglishWord, String russianWord, View view) {
-        wordsDataBaseHelper.addNewWord(EnglishWord, russianWord, view);
+        wordsDataBaseHelper.addNewWord(currentTableName, EnglishWord, russianWord, view);
         allOfWordsOfDictionary = loadWordsDictionary();
     }
 
@@ -243,7 +262,7 @@ public class ProcessOfLearning {
      * @param targetWord id primary key карточки из таблицы
      */
     public void deleteCurrentWord(long targetWord) {
-        wordsDataBaseHelper.deleteCurrentWord(targetWord);
+        wordsDataBaseHelper.deleteCurrentWord(currentTableName, targetWord);
         allOfWordsOfDictionary = loadWordsDictionary();
     }
 
@@ -343,8 +362,6 @@ public class ProcessOfLearning {
     }
 
 
-
-
     /**
      * @param - слово которое нужно перевести
      */
@@ -381,7 +398,7 @@ public class ProcessOfLearning {
 
         buttons = getButtons(view);
 
-          final Animation alfa = AnimationUtils.loadAnimation(mainContext, R.anim.faf);
+        final Animation alfa = AnimationUtils.loadAnimation(mainContext, R.anim.faf);
 
         allOfWordsOfDictionary = loadWordsDictionary();
 
@@ -403,13 +420,9 @@ public class ProcessOfLearning {
         for (int i = 0; i < countOfButtons; i++) {
 
 
-
             Button myButton = buttons.get(i);
 
             WordCard tempWordCardForButton = iterator.next();
-
-
-
 
 
             if (typeOfLearnFinal == 0) {
@@ -419,17 +432,14 @@ public class ProcessOfLearning {
             }
 
 
-
-if(myButton.getText().length() < 15) {
-    myButton.setTextSize(30);
-}else if(myButton.getText().length() < 20){
-    myButton.setTextSize(27);
-}else {
-    myButton.setTextSize(23);
-}
+            if (myButton.getText().length() < 10) {
+                myButton.setTextSize(30);
+            } else if (myButton.getText().length() < 15) {
+                myButton.setTextSize(27);
+            } else {
+                myButton.setTextSize(23);
+            }
             myButton.setBackground(context.getResources().getDrawable(R.drawable.button_for_learn_background));
-
-
 
 
             if (!answeredTrue) {
@@ -507,7 +517,7 @@ if(myButton.getText().length() < 15) {
                     }
                 }, 300);
 
-            }else {
+            } else {
                 button.startAnimation(animA);
                 reactionToTheRightAnswer(wordCard);
                 createButtons(view, context);
@@ -582,7 +592,6 @@ if(myButton.getText().length() < 15) {
         answeredTrue = true;
         done = true;
     }
-
 
 
 }

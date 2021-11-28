@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.englishwordslearning.logik.ProcessOfLearning;
 import com.example.englishwordslearning.logik.WordCard;
 
 import java.io.File;
@@ -25,13 +26,26 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
 
 
     private final static String TAG = "--->>>   ";
-    private static final int DB_VERSION = 2;
+    /**
+     * Нужно менять DB_VERSION при загрузке новой внешней базы данных
+     */
+    private static final int DB_VERSION = 4;
 
     private final Context mContext;
 
     private static final String DB_NAME = "MAIN_DATABASE";
 
-    private final static String TABLE_NAME = "MAIN_TABLE_DATABASE";
+    private static String TABLE_NAME = "MAIN_TABLE_DATABASE";
+
+    private static ArrayList<String> tableNamesList;
+
+    public static ArrayList<String> getTableNamesList() {
+        return tableNamesList;
+    }
+
+    private ExternalDatabaseHelper externalDatabaseHelper;
+    private SQLiteDatabase externalDatabase;
+
     private static SQLiteDatabase mainDataBase;
 
     private static WordsDataBaseHelper wordsDataBaseHelper;
@@ -63,23 +77,51 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         this.mContext = context;
 
         WordsDataBaseHelper wordsDataBaseHelper = this;
+
         mainDataBase = wordsDataBaseHelper.getReadableDatabase();
 
         this.getReadableDatabase();
+
+        if (tableNamesList == null) {
+            createTableNamesList();
+        }
+
+
         Log.i(TAG, mainDataBase.toString());
 
     }
 
 
+    private void createTableNamesList() {
+        externalDatabaseHelper = new ExternalDatabaseHelper(mContext);
+        externalDatabase = externalDatabaseHelper.getExternalDatabase();
+        Cursor namesCursor = externalDatabase.query("sqlite_sequence", new String[]{"name"}, null, null, null, null, null);
+        tableNamesList = new ArrayList<>();
+        while (namesCursor.moveToNext()) {
+            tableNamesList.add(namesCursor.getString(0));
+        }
+    }
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // upgradeMyDataBase(db, 0, DB_VERSION);
 
-        db.execSQL("CREATE TABLE MAIN_TABLE_DATABASE (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
-                "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
+        createTableNamesList();
+        for (int i = 0; i < tableNamesList.size(); i++) {
 
+            String tableName = tableNamesList.get(i);
+
+          /*  db.execSQL("CREATE TABLE " + tableName + " (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
+                    "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
+*/
+            createDB(db, tableName);
+        }
         insertExternalDatabase(db);
+    }
 
+    private void createDB(SQLiteDatabase db, String tableName) {
+        db.execSQL("CREATE TABLE " + tableName + " (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
+                "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
     }
 
 
@@ -88,38 +130,47 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         insertExternalDatabase(db);
     }
 
-    private void insertExternalDatabase(SQLiteDatabase db){
+    private void insertExternalDatabase(SQLiteDatabase db) {
         String englishWord;
         String russianWord;
         ExternalDatabaseHelper externalDatabaseHelper = new ExternalDatabaseHelper(mContext);
 
         SQLiteDatabase externalDatabase = externalDatabaseHelper.getExternalDatabase();
 
-        Cursor wordCursor = externalDatabase.query(ExternalDatabaseHelper.getTableName(), new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
-        while (wordCursor.moveToNext()) {
-            englishWord = wordCursor.getString(1).toLowerCase();
-            russianWord = wordCursor.getString(2).toLowerCase();
-            insertWord(db, englishWord, russianWord);
+
+        Cursor namesCursor = externalDatabase.query("sqlite_sequence", new String[]{"name"}, null, null, null, null, null);
+        tableNamesList = new ArrayList<>();
+        while (namesCursor.moveToNext()) {
+            tableNamesList.add(namesCursor.getString(0));
         }
-        wordCursor.close();
+
+        for (int i = 0; i < tableNamesList.size(); i++) {
+            Cursor wordCursor = externalDatabase.query(tableNamesList.get(i), new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
+            while (wordCursor.moveToNext()) {
+                englishWord = wordCursor.getString(1).toLowerCase();
+                russianWord = wordCursor.getString(2).toLowerCase();
+                insertWord(db, tableNamesList.get(i), englishWord, russianWord);
+            }
+            wordCursor.close();
+        }
     }
 
 
-    private void upgradeMyDataBase(SQLiteDatabase db, int i, int dbVersion) {
+   /* private void upgradeMyDataBase(SQLiteDatabase db, int i, int dbVersion) {
         if (dbVersion == 1) {
             db.execSQL("CREATE TABLE TABLE_NAME (_id INTEGER PRIMARY KEY AUTOINCREMENT , ENGLISH_WORD TEXT , RUSSIAN_WORD TEXT, RIGHT_ANSWER_COUNT INTEGER, " +
                     "WRONG_ANSWER_STAT INTEGER, NOW_LEARNING INTEGER, IS_LEARNED INTEGER);");
         }
 
-    }
+    }*/
 
 
     /**
      * Вставка слов в базу данных
      * /Вставляется английское слово , русское слово , количество сколько раз слово было угадано , и выучено слово или нет 1 или 0
      */
-    private void insertWord(SQLiteDatabase db, String englishWord, String russianWord) {
-        if (!testExistingWord(db, englishWord, russianWord)) {
+    private void insertWord(SQLiteDatabase db, String tableName, String englishWord, String russianWord) {
+        if (!testExistingWord(db, tableName, englishWord, russianWord)) {
             ContentValues wordValue = new ContentValues();
             wordValue.put("ENGLISH_WORD", englishWord);
             wordValue.put("RUSSIAN_WORD", russianWord);
@@ -127,12 +178,12 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
             wordValue.put("WRONG_ANSWER_STAT", 0);
             wordValue.put("NOW_LEARNING", 0);
             wordValue.put("IS_LEARNED", 0);
-            db.insert(TABLE_NAME, null, wordValue);
+            db.insert(tableName, null, wordValue);
         }
     }
 
     private void insertWord(SQLiteDatabase db, String tableName, String englishWord, String russianWord, int rightAnswer, int wrongAnswer, int nowLearning, int isLearned) {
-        if (!testExistingWord(db, englishWord, russianWord)) {
+        if (!testExistingWord(db, tableName, englishWord, russianWord)) {
             ContentValues wordValue = new ContentValues();
             wordValue.put("ENGLISH_WORD", englishWord);
             wordValue.put("RUSSIAN_WORD", russianWord);
@@ -144,7 +195,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private void changeWord(SQLiteDatabase db, String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerStat, int nowLearning, int isLearned) {
+    private void changeWord(SQLiteDatabase db, String tableName, String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerStat, int nowLearning, int isLearned) {
         ContentValues wordValue = new ContentValues();
         wordValue.put("ENGLISH_WORD", englishWord);
         wordValue.put("RUSSIAN_WORD", russianWord);
@@ -152,11 +203,11 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         wordValue.put("WRONG_ANSWER_STAT", wrongAnswerStat);
         wordValue.put("NOW_LEARNING", nowLearning);
         wordValue.put("IS_LEARNED", isLearned);
-        db.update(TABLE_NAME, wordValue, "ENGLISH_WORD = ?", new String[]{englishWord});
+        db.update(tableName, wordValue, "ENGLISH_WORD = ?", new String[]{englishWord});
     }
 
-    private void insertWord(SQLiteDatabase db, WordCard wordCard) {
-        if (!testExistingWord(db, wordCard.getEnglishWord(), wordCard.getRussianWord())) {
+    private void insertWord(SQLiteDatabase db, String tableName, WordCard wordCard) {
+        if (!testExistingWord(db, tableName, wordCard.getEnglishWord(), wordCard.getRussianWord())) {
             ContentValues wordValue = new ContentValues();
             wordValue.put("ENGLISH_WORD", wordCard.getEnglishWord());
             wordValue.put("RUSSIAN_WORD", wordCard.getRussianWord());
@@ -164,7 +215,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
             wordValue.put("WRONG_ANSWER_STAT", wordCard.getWrongAnswerCount());
             wordValue.put("NOW_LEARNING", wordCard.nowLearning());
             wordValue.put("IS_LEARNED", wordCard.isLearned());
-            db.insert(TABLE_NAME, null, wordValue);
+            db.insert(tableName, null, wordValue);
         }
     }
 
@@ -181,15 +232,15 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
      * нельзя добавить одинаковые слова тоесть run - бег и run - бежать добавить не получится
      * Возможно придётся изменить это??????????????????????????
      */
-    private boolean testExistingWord(SQLiteDatabase database, String englishWord, String russianWord) {
+    private boolean testExistingWord(SQLiteDatabase database, String tableName, String englishWord, String russianWord) {
         boolean resultEnglish = false;
         boolean resultRussian = false;
-        Cursor englishCursor = database.query(TABLE_NAME, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "ENGLISH_WORD = ?", new String[]{englishWord}, null, null, null);
+        Cursor englishCursor = database.query(tableName, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "ENGLISH_WORD = ?", new String[]{englishWord}, null, null, null);
         if (englishCursor.moveToNext()) {
             resultEnglish = englishCursor.getCount() > 0;
         }
 
-        Cursor russianCursor = database.query(TABLE_NAME, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "RUSSIAN_WORD = ?", new String[]{russianWord}, null, null, null);
+        Cursor russianCursor = database.query(tableName, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "RUSSIAN_WORD = ?", new String[]{russianWord}, null, null, null);
         if (russianCursor.moveToNext()) {
             resultRussian = russianCursor.getCount() > 0;
         }
@@ -199,8 +250,8 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         return resultEnglish && resultRussian;
     }
 
-    private void deleteWord(SQLiteDatabase db, long id) {
-        db.delete(TABLE_NAME, "_id = ?", new String[]{"" + id});
+    private void deleteWord(SQLiteDatabase db, String tableName, long id) {
+        db.delete(tableName, "_id = ?", new String[]{"" + id});
     }
 
 
@@ -234,15 +285,14 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
      * @param englishWord
      * @param russianWord
      */
-    public void addNewWord(String englishWord, String russianWord, View view) {
+    public void addNewWord(String tableName, String englishWord, String russianWord, View view) {
 
         if (testGettingWords(englishWord, russianWord)) {
             //Приведение строк к нижнему регистру
             String correctedEnglishWord = englishWord.toLowerCase();
             String correctedRussianWord = russianWord.toLowerCase();
             //Запуск метода вставки в базу данных
-            insertWord(mainDataBase, correctedEnglishWord, correctedRussianWord);
-            //  userDataBaseHelper.insertWord(userDataBase, correctedEnglishWord, correctedRussianWord);
+            insertWord(mainDataBase, tableName, correctedEnglishWord, correctedRussianWord);
 
 
             Toast toast = Toast.makeText(view.getContext(), "Word added", Toast.LENGTH_SHORT);
@@ -254,7 +304,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
     }
 
     public void changeExistsWord(WordCard wordCard) {
-        changeWord(mainDataBase, wordCard.getEnglishWord(), wordCard.getRussianWord(), wordCard.getRightAnswerCount(), wordCard.getWrongAnswerCount(), wordCard.nowLearning(), wordCard.isLearned());
+        changeWord(mainDataBase, ProcessOfLearning.currentTableName, wordCard.getEnglishWord(), wordCard.getRussianWord(), wordCard.getRightAnswerCount(), wordCard.getWrongAnswerCount(), wordCard.nowLearning(), wordCard.isLearned());
     }
 
     /**
@@ -262,14 +312,14 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
      *
      * @param id
      */
-    public void deleteCurrentWord(long id) {
+    public void deleteCurrentWord(String tableName, long id) {
         String deletingWord = "";
-        Cursor cursor = mainDataBase.query(TABLE_NAME, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "_id = ?", new String[]{Long.toString(id)}, null, null, null);
+        Cursor cursor = mainDataBase.query(tableName, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "_id = ?", new String[]{Long.toString(id)}, null, null, null);
         if (cursor.moveToNext()) {
             deletingWord = cursor.getString(1);
         }
         cursor.close();
-        deleteWord(mainDataBase, id);
+        deleteWord(mainDataBase, tableName, id);
         //   userDataBaseHelper.deleteCurrentWord(deletingWord);
     }
 
