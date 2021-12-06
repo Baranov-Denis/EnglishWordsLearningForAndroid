@@ -46,17 +46,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadSettings() {
 
-        if (mySharedPreference == null) {
 
+        if (mySharedPreference == null) {
             mySharedPreference = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         }
-        if (mySharedPreference.contains(COUNT_OF_REPEAT)) {
 
+        if (mySharedPreference.contains(COUNT_OF_REPEAT)) {
             mainInterface.setCountOfRepeatWord(mySharedPreference.getInt(COUNT_OF_REPEAT, 0));
             mainInterface.setNumberOfCurrentLearnWords(mySharedPreference.getInt(COUNT_OF_NUMBER_CURRENT_WORDS, 0));
         }
-        if (mySharedPreference.contains(TYPE_OF_LEARN_WORDS)) {
 
+        if (mySharedPreference.contains(TYPE_OF_LEARN_WORDS)) {
             mainInterface.setTypeOfLearn(mySharedPreference.getInt(TYPE_OF_LEARN_WORDS, 0));
         }
 
@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        //Подключение кнопок
-        setOnClickButtons();
         //Загружаем базу данных
         WordsDataBaseHelper.getWordsDataBaseHelper(this);
 
@@ -85,9 +83,12 @@ public class MainActivity extends AppCompatActivity {
         //Создает экземпляр MainInterface
         MainInterface.getMainInterface(this);
         mainInterface = MainInterface.getMainInterface();
+        ProcessOfLearning pl = ProcessOfLearning.getProcessOfLearning(this);
         loadSettings();
 
 
+        //Подключение кнопок
+        setOnClickButtons();
     }
 
     @Override

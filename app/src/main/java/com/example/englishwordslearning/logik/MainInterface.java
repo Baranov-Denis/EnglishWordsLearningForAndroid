@@ -109,6 +109,10 @@ public class MainInterface {
         processOfLearning.showWord(view);
     }*/
 
+    public void updateWordsDictionary(){
+        processOfLearning.updateWordsDictionary();
+    }
+
     public void createButtonsForLearning( View view,Context context){
         processOfLearning.createButtons(view,context);
     }

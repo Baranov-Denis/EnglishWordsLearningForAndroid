@@ -30,12 +30,18 @@ public class ProcessOfLearning {
     private static ProcessOfLearning processOfLearning;
     private WordsDataBaseHelper wordsDataBaseHelper;
     private SQLiteDatabase wordsDatabase;
+
     private static final String TAG = " ->> learning";
 
-
+    /**
+     * Переменная для
+     */
     private int typeOfLearnFinal = 0;
 
 
+    /**
+     * Переменная для выбора имени таблицы currentTableName из
+     */
     private static int currentTableNum;
 
     public static int getCurrentTableNum() {
@@ -203,6 +209,10 @@ public class ProcessOfLearning {
 
     }
 
+    public void updateWordsDictionary() {
+        allOfWordsOfDictionary = loadWordsDictionary();
+    }
+
 
     /**
      * Загрузка главного словаря
@@ -217,7 +227,6 @@ public class ProcessOfLearning {
             if (wordCursor.getInt(6) == 0) numberOfUnlearnedWords++;
             allWords.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
         }
-        Log.i(TAG, "unlearned words : " + numberOfUnlearnedWords + " all words : " + allWords.size());
         return allWords;
     }
 
@@ -252,7 +261,8 @@ public class ProcessOfLearning {
      */
     public void addNewWord(String EnglishWord, String russianWord, View view) {
         wordsDataBaseHelper.addNewWord(currentTableName, EnglishWord, russianWord, view);
-        allOfWordsOfDictionary = loadWordsDictionary();
+        updateWordsDictionary();
+        // allOfWordsOfDictionary = loadWordsDictionary();
     }
 
     /**
@@ -302,19 +312,16 @@ public class ProcessOfLearning {
 
 
     private ArrayList<WordCard> createLearnList() {
+        updateWordsDictionary();
         ArrayList<WordCard> learnList = new ArrayList<>();
         WordCard randomCard;
         boolean endingWords = false;
 
+        for (WordCard wordCard : allOfWordsOfDictionary) {
 
-        if (currentLearningWords == null) {
-            for (WordCard wordCard : allOfWordsOfDictionary) {
-                if (wordCard.nowLearning() > 0 & wordCard.isLearned() == 0) learnList.add(wordCard);
-            }
-        } else {
-            learnList = new ArrayList<>(currentLearningWords);
+            if (wordCard.nowLearning() > 0 & wordCard.isLearned() == 0)
+                learnList.add(wordCard);
         }
-
 
         while (learnList.size() < countOfCurrentLearnWords) {
 
@@ -341,6 +348,8 @@ public class ProcessOfLearning {
                 }
             }
         }
+
+
         if (endingWords) {
             String text = "";
 
@@ -351,6 +360,7 @@ public class ProcessOfLearning {
             Toast toast = Toast.makeText(mainContext, text, Toast.LENGTH_SHORT);
             toast.show();
         }
+
         return learnList;
     }
 
@@ -367,12 +377,15 @@ public class ProcessOfLearning {
      */
     public void showWord(View view) {
         TextView targetWord = view.findViewById(R.id.target_word);
-
+        TextView targetWordCount = view.findViewById(R.id.count_of_target_word);
         if (typeOfLearnFinal == 0) {
-            targetWord.setText(wordThatNeedsToBeTranslated.getRussianWord() + "    " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1));
+            targetWord.setText(wordThatNeedsToBeTranslated.getRussianWord());
         } else if (typeOfLearnFinal == 1) {
-            targetWord.setText(wordThatNeedsToBeTranslated.getEnglishWord() + "    " + wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1));
+            targetWord.setText(wordThatNeedsToBeTranslated.getEnglishWord());
         }
+
+        targetWordCount.setText(wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1));
+
 
     }
 
@@ -395,20 +408,20 @@ public class ProcessOfLearning {
 
     public void createButtons(View view, Context context) {
 
-
         buttons = getButtons(view);
 
         final Animation alfa = AnimationUtils.loadAnimation(mainContext, R.anim.faf);
 
         allOfWordsOfDictionary = loadWordsDictionary();
-
         currentLearningWords = createLearnList();
 
 
         if (answeredTrue && done) {
+
             done = false;
             typeOfLearnFinal = setTypeOfLearnFinal();
             learningWordsForButtons = getRandomListForCreateButtons(currentLearningWords, countOfButtons);
+
             wordThatNeedsToBeTranslated = getWordForLearn(learningWordsForButtons);
 
         }

@@ -41,7 +41,7 @@ public class SettingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_setting);
         mainInterface = MainInterface.getMainInterface(this);
-        setSeekBar();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -50,7 +50,7 @@ public class SettingActivity extends AppCompatActivity {
         //Переназначаем действие кнопки вверх для получения анимации перехода
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-
+        setSeekBar();
         setModeSpinner();
         setTableSpinner();
 
@@ -96,6 +96,10 @@ public class SettingActivity extends AppCompatActivity {
     private void setSeekBar() {
         int countOfRepeatWord = mainInterface.getCountOfRepeatWord();
         int countOfCurrentLearnWords = mainInterface.getTheNumberOfWordsBeingStudied();
+        Log.i("fgdffh   "  , mainInterface.getTheNumberOfWordsBeingStudied() + " 1");
+Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
+       // int countOfRepeatWord = 10;
+       // int countOfCurrentLearnWords = 10;
 
         SeekBar seekBarOfRepeat = findViewById(R.id.seek_bar_for_count_of_repeat_words);
         seekBarOfRepeat.setProgress(countOfRepeatWord);
@@ -194,6 +198,7 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemPosition, long l) {
                 ProcessOfLearning.setCurrentTableNum(selectedItemPosition);
+                mainInterface.updateWordsDictionary();
                 saveSettings();
             }
 
