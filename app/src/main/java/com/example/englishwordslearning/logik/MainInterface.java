@@ -38,6 +38,7 @@ public class MainInterface {
         wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBaseHelper(context);
         processOfLearning = ProcessOfLearning.getProcessOfLearning(context);
 
+
       //  processOfLearning.setAllOfWordsOfDictionary(wordsDataBase.loadDictionaryFromSQLiteDataBase());
     }
 
@@ -111,6 +112,7 @@ public class MainInterface {
 
     public void updateWordsDictionary(){
         processOfLearning.updateWordsDictionary();
+
     }
 
     public void createButtonsForLearning( View view,Context context){

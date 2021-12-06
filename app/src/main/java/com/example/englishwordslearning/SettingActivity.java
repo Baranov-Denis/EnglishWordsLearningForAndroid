@@ -28,6 +28,9 @@ public class SettingActivity extends AppCompatActivity {
     LinearLayout setCountOfWords;
     LinearLayout setTypeOfLearningSpinner;
     LinearLayout setTable;
+    SeekBar seekBarOfRepeat;
+    SeekBar seekBarOfNumber;
+    TextView textViewOfNumber;
 
 
     @Override
@@ -101,14 +104,14 @@ Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
        // int countOfRepeatWord = 10;
        // int countOfCurrentLearnWords = 10;
 
-        SeekBar seekBarOfRepeat = findViewById(R.id.seek_bar_for_count_of_repeat_words);
+        seekBarOfRepeat = findViewById(R.id.seek_bar_for_count_of_repeat_words);
         seekBarOfRepeat.setProgress(countOfRepeatWord);
         TextView textViewOfRepeat = findViewById(R.id.count_of_repeat_int);
         textViewOfRepeat.setText(String.valueOf(++countOfRepeatWord));
 
-        SeekBar seekBarOfNumber = findViewById(R.id.seek_bar_count_of_current_learn_words);
+        seekBarOfNumber = findViewById(R.id.seek_bar_count_of_current_learn_words);
         seekBarOfNumber.setProgress(countOfCurrentLearnWords);
-        TextView textViewOfNumber = findViewById(R.id.count_of_current_learn_words_int);
+        textViewOfNumber = findViewById(R.id.count_of_current_learn_words_int);
         textViewOfNumber.setText(String.valueOf(countOfCurrentLearnWords));
 
 
@@ -198,7 +201,18 @@ Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int selectedItemPosition, long l) {
                 ProcessOfLearning.setCurrentTableNum(selectedItemPosition);
+
                 mainInterface.updateWordsDictionary();
+             int dictionarySize =   mainInterface.getNumberOfAllWords();
+
+                if (dictionarySize < Integer.parseInt(textViewOfNumber.getText().toString())) {
+                    mainInterface.setNumberOfCurrentLearnWords(dictionarySize);
+                    textViewOfNumber.setText(Integer.toString(dictionarySize));
+                    seekBarOfNumber.setProgress(dictionarySize);
+                }
+
+
+            //    mainInterface.updateWordsDictionary();
                 saveSettings();
             }
 

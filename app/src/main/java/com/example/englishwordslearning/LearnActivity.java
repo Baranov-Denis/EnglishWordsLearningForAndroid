@@ -43,7 +43,11 @@ public class LearnActivity extends AppCompatActivity {
 
         mainInterface = MainInterface.getMainInterface(this);
 
+        mainInterface.updateWordsDictionary();
+
         mainInterface.createButtonsForLearning(findViewById(R.id.learn_activity),this);
+
+
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);

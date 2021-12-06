@@ -202,9 +202,8 @@ public class ProcessOfLearning {
         this.mainContext = context;
         wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBaseHelper(context);
         wordsDatabase = wordsDataBaseHelper.getReadableDatabase();
-
         currentTableName = WordsDataBaseHelper.getTableNamesList().get(currentTableNum);
-        allOfWordsOfDictionary = loadWordsDictionary();
+    //    allOfWordsOfDictionary = loadWordsDictionary();
 
 
     }
@@ -221,11 +220,20 @@ public class ProcessOfLearning {
      */
     private ArrayList<WordCard> loadWordsDictionary() {
         ArrayList<WordCard> allWords = new ArrayList<>();
+        WordCard tempWordCard;
         numberOfUnlearnedWords = 0;
         Cursor wordCursor = wordsDatabase.query(currentTableName, null, null, null, null, null, "ENGLISH_WORD");
         while (wordCursor.moveToNext()) {
             if (wordCursor.getInt(6) == 0) numberOfUnlearnedWords++;
-            allWords.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
+            tempWordCard = new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6));
+
+            if(!allWords.contains(tempWordCard)) {
+                allWords.add(tempWordCard);
+            }else {
+                Toast toast = Toast.makeText(mainContext , "Word already exist "  + tempWordCard.getEnglishWord(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
         }
         return allWords;
     }
@@ -312,7 +320,7 @@ public class ProcessOfLearning {
 
 
     private ArrayList<WordCard> createLearnList() {
-        updateWordsDictionary();
+        //updateWordsDictionary();
         ArrayList<WordCard> learnList = new ArrayList<>();
         WordCard randomCard;
         boolean endingWords = false;
@@ -412,7 +420,7 @@ public class ProcessOfLearning {
 
         final Animation alfa = AnimationUtils.loadAnimation(mainContext, R.anim.faf);
 
-        allOfWordsOfDictionary = loadWordsDictionary();
+        //allOfWordsOfDictionary = loadWordsDictionary();
         currentLearningWords = createLearnList();
 
 
