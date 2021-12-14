@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 
+import java.util.ArrayList;
+
 public class MainInterface {
 
     private static MainInterface mainInterface;
@@ -146,5 +148,9 @@ public class MainInterface {
 
     public void updateButtons() {
         processOfLearning.updateButtons();
+    }
+
+    public ArrayList<WordCard> getAllWordsFromCurrentDictionary(){
+        return processOfLearning.getAllOfWordsOfDictionary();
     }
 }

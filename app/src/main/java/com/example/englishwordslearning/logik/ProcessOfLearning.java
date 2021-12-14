@@ -85,6 +85,10 @@ public class ProcessOfLearning {
      */
     private ArrayList<WordCard> allOfWordsOfDictionary;
 
+    public ArrayList<WordCard> getAllOfWordsOfDictionary() {
+        return allOfWordsOfDictionary;
+    }
+
     public int getAllOfWordsOfDictionarySize() {
         return allOfWordsOfDictionary.size();
     }
@@ -225,7 +229,7 @@ public class ProcessOfLearning {
         Cursor wordCursor = wordsDatabase.query(currentTableName, null, null, null, null, null, "ENGLISH_WORD");
         while (wordCursor.moveToNext()) {
             if (wordCursor.getInt(6) == 0) numberOfUnlearnedWords++;
-            tempWordCard = new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6));
+            tempWordCard = new WordCard(wordCursor.getString(1).trim(), wordCursor.getString(2).trim(), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6));
 
             if(!allWords.contains(tempWordCard)) {
                 allWords.add(tempWordCard);

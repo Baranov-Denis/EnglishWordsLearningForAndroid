@@ -150,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startCreateActivity(View view) {
-        Intent intent = new Intent(this, CreateActivity.class);
+        //Intent intent = new Intent(this, CreateActivity.class);
+        Intent intent = new Intent(this, NewCreateActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }

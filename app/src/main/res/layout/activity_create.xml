@@ -185,7 +185,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button_for_reset_all_progress"
+                android:id="@+id/button_for_reset_all_progressol"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
                 android:textSize="12sp"/>
 
             <Button
-                android:id="@+id/button_for_delete_word"
+                android:id="@+id/button_for_delete_wordol"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
                 android:textSize="12sp"/>
 
             <Button
-                android:id="@+id/button_for_save_word"
+                android:id="@+id/button_for_save_wordol"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
