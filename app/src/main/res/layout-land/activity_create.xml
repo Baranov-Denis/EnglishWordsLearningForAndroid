@@ -167,7 +167,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="5dp"
-                android:text="@string/reset"
+                android:text="@string/reset_all_progress"
                 android:textSize="15sp"/>
 
             <Button
@@ -177,7 +177,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="5dp"
-                android:text="@string/delete"
+                android:text="@string/delete_word"
                 android:textSize="15sp"/>
 
             <Button
@@ -185,7 +185,7 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:text="@string/save"
+                android:text="@string/add_word"
                 android:textSize="15sp"/>
 
         </LinearLayout>

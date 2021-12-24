@@ -5,9 +5,10 @@
     <string name="settings_name">Настройки</string>
     <string name="enter_english_word">Введите английское слово:</string>
     <string name="enter_russian_word">Введите русское слово:</string>
-    <string name="save">Сохранить слово</string>
-    <string name="delete">Удалить слово</string>
-    <string name="reset">Сбросить прогресс</string>
+    <string name="add_word">Добавить слово</string>
+    <string name="delete_word">Удалить слово</string>
+    <string name="reset_all_progress">Сбросить прогресс</string>
+    <string name="chancel">Отмена</string>
     <string name="target_word">word</string>
     <string name="choose_count_of_learning_words">Установите количество слов для изучения</string>
     <string name="choose_count_of_repeat_words">Установите количество повторений слова</string>

@@ -29,7 +29,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
     /**
      * Нужно менять DB_VERSION при загрузке новой внешней базы данных
      */
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 6;
 
     private final Context mContext;
 
@@ -314,9 +314,12 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
      */
     public void deleteCurrentWord(String tableName, long id) {
         String deletingWord = "";
+
         Cursor cursor = mainDataBase.query(tableName, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "_id = ?", new String[]{Long.toString(id)}, null, null, null);
+        Log.i("---> " , Long.toString(id) + "   " );
         if (cursor.moveToNext()) {
             deletingWord = cursor.getString(1);
+            Log.i("---> " , deletingWord);
         }
         cursor.close();
         deleteWord(mainDataBase, tableName, id);
@@ -335,7 +338,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         ArrayList<WordCard> tempLibrary = new ArrayList<WordCard>();
         Cursor wordCursor = mainDataBase.query(TABLE_NAME, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
         while (wordCursor.moveToNext()) {
-            tempLibrary.add(new WordCard(wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
+            tempLibrary.add(new WordCard(wordCursor.getInt(0),wordCursor.getString(1), wordCursor.getString(2), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6)));
         }
         wordCursor.close();
 

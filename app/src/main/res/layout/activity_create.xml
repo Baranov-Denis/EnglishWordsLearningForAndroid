@@ -191,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginHorizontal="5dp"
-                android:text="@string/reset"
+                android:text="@string/reset_all_progress"
                 android:textSize="12sp"/>
 
             <Button
@@ -201,7 +201,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginHorizontal="5dp"
-                android:text="@string/delete"
+                android:text="@string/delete_word"
                 android:textSize="12sp"/>
 
             <Button
@@ -211,7 +211,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginHorizontal="5dp"
-                android:text="@string/save"
+                android:text="@string/add_word"
                 android:textSize="12sp"/>
 
         </LinearLayout>

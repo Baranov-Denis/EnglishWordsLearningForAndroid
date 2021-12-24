@@ -8,6 +8,8 @@ import androidx.annotation.RequiresApi;
 import java.util.Objects;
 
 public class WordCard {
+
+    private int id;
     //английское слово
     private String englishWord;
     //русское слово
@@ -29,6 +31,10 @@ public class WordCard {
     //прибавляется 1 после окончания изучения и удаления слова из списка изучаемых слов
     //выученные слова подмешиваются в список изучаемых слов ?????????????????????????????????
     private int isLearned;
+
+    public int getId() {
+        return id;
+    }
 
     public void setEnglishWord(String englishWord) {
         this.englishWord = englishWord;
@@ -78,7 +84,8 @@ public class WordCard {
         return isLearned;
     }
 
-    public WordCard(String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerCount, int nowLearning, int isLearned) {
+    public WordCard(int id, String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerCount, int nowLearning, int isLearned) {
+        this.id = id;
         this.englishWord = englishWord;
         this.russianWord = russianWord;
         this.rightAnswerCount = rightAnswerCount;

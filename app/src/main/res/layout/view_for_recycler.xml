@@ -8,13 +8,14 @@
     android:layout_height="wrap_content"
     android:layout_margin="3dp"
     card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="3dp">
+    card_view:cardElevation="3dp"
+   >
 
     <LinearLayout
         android:id="@+id/recycler_linear_layout_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/yellow"
+        android:background="@drawable/pressed_item_for_recycler_view"
         android:orientation="horizontal"
         android:padding="3dp">
 

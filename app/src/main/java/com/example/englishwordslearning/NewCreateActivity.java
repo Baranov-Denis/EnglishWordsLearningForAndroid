@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.englishwordslearning.logik.MainInterface;
 import com.example.englishwordslearning.logik.WordCard;
@@ -24,23 +27,31 @@ public class NewCreateActivity extends AppCompatActivity {
 
     private TextView englishSort;
     private TextView russianSort;
+    private long selectedItem;
+    private String sortType = "eng";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_create);
+        englishSort = findViewById(R.id.engl_sort);
+        russianSort = findViewById(R.id.rus_sort);
         mainInterface = MainInterface.getMainInterface(this);
         mainInterface.updateWordsDictionary();
-        setRecyclerView();
+        allWordsFromCurrentDictionary = mainInterface.getAllWordsFromCurrentDictionary();
+
+        sortRecyclerView();
         setOnClickForButtons();
         setSortButtons();
+
+
     }
 
 
     private void setRecyclerView() {
         RecyclerView wordsRecycler = findViewById(R.id.words_recycler);
-        allWordsFromCurrentDictionary = mainInterface.getAllWordsFromCurrentDictionary();
+      //  allWordsFromCurrentDictionary = mainInterface.getAllWordsFromCurrentDictionary();
 
 
         String[] engWords = new String[allWordsFromCurrentDictionary.size()];
@@ -61,45 +72,55 @@ public class NewCreateActivity extends AppCompatActivity {
 
 
         RecyclerAdapter adapter = new RecyclerAdapter(engWords, rusWords, stat);
+        adapter.setListener(new RecyclerAdapter.Listener() {
+            @Override
+            public void onClick(int position) {
+
+                WordCard wordCard = allWordsFromCurrentDictionary.get(position);
+                selectedItem = wordCard.getId();
+                Toast toast = Toast.makeText(getApplicationContext(),wordCard.getEnglishWord(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
         wordsRecycler.setAdapter(adapter);
         wordsRecycler.setLayoutManager(new LinearLayoutManager(this));
+
 
 
     }
 
     private void setSortButtons() {
-        englishSort = findViewById(R.id.engl_sort);
-        russianSort = findViewById(R.id.rus_sort);
+
         englishSort.setOnClickListener(e -> {
+            sortType = "eng";
             sortEnglishWords();
-            englishSort.setText("English ▼");
-            russianSort.setText("Russian");
+
         });
 
 
         russianSort.setOnClickListener(e -> {
-            sortRussianWords();
-            englishSort.setText("English");
-            russianSort.setText("Russian ▼");
+            sortType = "rus";
+     sortRussianWords();
+
         });
     }
 
 
     private void setOnClickForButtons() {
-        Button saveButton = findViewById(R.id.button_for_save_word);
+        Button addButton = findViewById(R.id.button_for_save_word);
         Button deleteButton = findViewById(R.id.button_for_delete_word);
         Button resetButton = findViewById(R.id.button_for_reset_all_progress);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sortRussianWords();
+                addWord();
             }
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sortEnglishWords();
+                deleteWord(view);
             }
         });
 
@@ -111,11 +132,26 @@ public class NewCreateActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Запускаем сохранение слова
-     *
-     *
-     */
+    private void addWord(){
+        Intent intent = new Intent(this, AddNewWordActivity.class);
+        startActivity(intent);
+    }
+
+    private void deleteWord(View view) {
+        mainInterface.deleteCurrentWord(selectedItem);
+        allWordsFromCurrentDictionary = mainInterface.getAllWordsFromCurrentDictionary();
+        sortRecyclerView();
+    }
+
+
+
+    private void sortRecyclerView(){
+        if(sortType.equals("eng")) sortEnglishWords();
+        else if (sortType.equals("rus")) sortRussianWords();
+    }
+
+
+
     private void sortRussianWords() {
 
         Collections.sort(allWordsFromCurrentDictionary, new Comparator<WordCard>() {
@@ -125,6 +161,8 @@ public class NewCreateActivity extends AppCompatActivity {
                 return lhs.getRussianWord().compareTo(rhs.getRussianWord());
             }
         });
+        englishSort.setText("English");
+        russianSort.setText("Russian ▼");
         setRecyclerView();
     }
 
@@ -136,6 +174,8 @@ public class NewCreateActivity extends AppCompatActivity {
                 return lhs.getEnglishWord().compareTo(rhs.getEnglishWord());
             }
         });
+        englishSort.setText("English ▼");
+        russianSort.setText("Russian");
         setRecyclerView();
     }
 

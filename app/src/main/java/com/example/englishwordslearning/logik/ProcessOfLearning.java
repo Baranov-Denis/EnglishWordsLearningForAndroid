@@ -229,13 +229,13 @@ public class ProcessOfLearning {
         Cursor wordCursor = wordsDatabase.query(currentTableName, null, null, null, null, null, "ENGLISH_WORD");
         while (wordCursor.moveToNext()) {
             if (wordCursor.getInt(6) == 0) numberOfUnlearnedWords++;
-            tempWordCard = new WordCard(wordCursor.getString(1).trim(), wordCursor.getString(2).trim(), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6));
+            tempWordCard = new WordCard(wordCursor.getInt(0), wordCursor.getString(1).trim(), wordCursor.getString(2).trim(), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6));
 
             if(!allWords.contains(tempWordCard)) {
                 allWords.add(tempWordCard);
             }else {
-                Toast toast = Toast.makeText(mainContext , "Word already exist "  + tempWordCard.getEnglishWord(), Toast.LENGTH_SHORT);
-                toast.show();
+               // Toast toast = Toast.makeText(mainContext , "Word already exist "  + tempWordCard.getEnglishWord(), Toast.LENGTH_SHORT);
+             //   toast.show();
             }
 
         }
@@ -284,6 +284,7 @@ public class ProcessOfLearning {
      * @param targetWord id primary key карточки из таблицы
      */
     public void deleteCurrentWord(long targetWord) {
+
         wordsDataBaseHelper.deleteCurrentWord(currentTableName, targetWord);
         allOfWordsOfDictionary = loadWordsDictionary();
     }
