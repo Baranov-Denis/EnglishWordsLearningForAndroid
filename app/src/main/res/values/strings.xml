@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">EnglishWordsLearning</string>
     <string name="creating_name">Создание словаря</string>
+    <string name="choosing_table">Выбор словаря</string>
     <string name="learn_name">Изучать слова</string>
     <string name="settings_name">Настройки</string>
     <string name="enter_english_word">Введите английское слово:</string>
@@ -8,6 +9,8 @@
     <string name="add_word">Добавить слово</string>
     <string name="delete_word">Удалить слово</string>
     <string name="reset_all_progress">Сбросить прогресс</string>
+    <string name="back">Назад</string>
+    <string name="choose">Выбрать</string>
     <string name="chancel">Отмена</string>
     <string name="target_word">word</string>
     <string name="choose_count_of_learning_words">Установите количество слов для изучения</string>

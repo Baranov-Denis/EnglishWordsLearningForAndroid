@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -27,7 +29,8 @@ public class SettingActivity extends AppCompatActivity {
     LinearLayout setCountOfRepeats;
     LinearLayout setCountOfWords;
     LinearLayout setTypeOfLearningSpinner;
-    LinearLayout setTable;
+    Button setTableButton;
+  //  LinearLayout setTable;
     SeekBar seekBarOfRepeat;
     SeekBar seekBarOfNumber;
     TextView textViewOfNumber;
@@ -40,7 +43,8 @@ public class SettingActivity extends AppCompatActivity {
         setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
         setCountOfWords = findViewById(R.id.setCountOfWords);
         setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
-        setTable = findViewById(R.id.setTable);
+        setTableButton = findViewById(R.id.setTable_button);
+      //  setTable = findViewById(R.id.setTable);
 
         setContentView(R.layout.activity_setting);
         mainInterface = MainInterface.getMainInterface(this);
@@ -55,8 +59,19 @@ public class SettingActivity extends AppCompatActivity {
 
         setSeekBar();
         setModeSpinner();
-        setTableSpinner();
+    // setTableSpinner();
+        showWordsCount();
 
+        startChoosing();
+
+    }
+
+
+    private void showWordsCount(){
+        TextView wordsCountView = findViewById(R.id.count_of_all_words);
+        mainInterface.updateWordsDictionary();
+        int allWordsInt = mainInterface.getNumberOfAllWords();
+        wordsCountView.setText(Integer.toString(allWordsInt));
     }
 
 
@@ -66,7 +81,7 @@ public class SettingActivity extends AppCompatActivity {
          setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
          setCountOfWords = findViewById(R.id.setCountOfWords);
          setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
-         setTable = findViewById(R.id.setTable);
+         setTableButton = findViewById(R.id.setTable_button);
 
         final Animation rightToLeft = AnimationUtils.loadAnimation(this, R.anim.from_right_to_left);
         final Animation leftToRight = AnimationUtils.loadAnimation(this, R.anim.from_left_to_right);
@@ -74,7 +89,7 @@ public class SettingActivity extends AppCompatActivity {
         setCountOfRepeats.startAnimation(rightToLeft);
         setCountOfWords.startAnimation(leftToRight);
         setTypeOfLearningSpinner.startAnimation(rightToLeft);
-        setTable.startAnimation(leftToRight);
+        setTableButton.startAnimation(leftToRight);
     }
 
     @Override
@@ -83,7 +98,7 @@ public class SettingActivity extends AppCompatActivity {
          setCountOfRepeats = findViewById(R.id.setCountOfRepeats);
         setCountOfWords = findViewById(R.id.setCountOfWords);
          setTypeOfLearningSpinner = findViewById(R.id.setTypeOfLearningSpinner);
-        setTable = findViewById(R.id.setTable);
+        setTableButton = findViewById(R.id.setTable_button);
 
         final Animation hideToLeft = AnimationUtils.loadAnimation(this, R.anim.hide_to_left);
         final Animation hideToRight = AnimationUtils.loadAnimation(this, R.anim.hide_to_right);
@@ -91,7 +106,7 @@ public class SettingActivity extends AppCompatActivity {
         setCountOfRepeats.startAnimation(hideToLeft);
         setCountOfWords.startAnimation(hideToRight);
         setTypeOfLearningSpinner.startAnimation(hideToLeft);
-        setTable.startAnimation(hideToRight);
+        setTableButton.startAnimation(hideToRight);
 
 
     }
@@ -185,7 +200,7 @@ Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
 
     }
 
-
+/*
     private void setTableSpinner() {
         String[] data = WordsDataBaseHelper.getTableNamesList().toArray(new String[0]);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.my_spinner, data);
@@ -213,6 +228,7 @@ Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
 
 
             //    mainInterface.updateWordsDictionary();
+                showWordsCount();
                 saveSettings();
             }
 
@@ -222,6 +238,17 @@ Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
             }
         });
 
+    }
+*/
+
+
+    private void startChoosing(){
+        Button button = findViewById(R.id.setTable_button);
+        button.setOnClickListener(e->{
+            Intent intent = new Intent(this, ChooseTableNameActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        });
     }
 
     private void saveSettings() {
@@ -237,6 +264,9 @@ Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        SettingActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+       // SettingActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 }

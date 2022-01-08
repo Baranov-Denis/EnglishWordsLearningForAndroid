@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         //Создает экземпляр MainInterface
         MainInterface.getMainInterface(this);
         mainInterface = MainInterface.getMainInterface();
-        ProcessOfLearning pl = ProcessOfLearning.getProcessOfLearning(this);
+       // ProcessOfLearning pl = ProcessOfLearning.getProcessOfLearning(this);
+        mainInterface.updateWordsDictionary();
         loadSettings();
 
 
@@ -150,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startCreateActivity(View view) {
-        //Intent intent = new Intent(this, CreateActivity.class);
         Intent intent = new Intent(this, NewCreateActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);

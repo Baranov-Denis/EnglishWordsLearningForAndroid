@@ -1,6 +1,8 @@
 package com.example.englishwordslearning;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -110,6 +112,8 @@ public class NewCreateActivity extends AppCompatActivity {
         Button addButton = findViewById(R.id.button_for_save_word);
         Button deleteButton = findViewById(R.id.button_for_delete_word);
         Button resetButton = findViewById(R.id.button_for_reset_all_progress);
+        Button backButton = findViewById(R.id.button_for_back_from_creating);
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,11 +134,19 @@ public class NewCreateActivity extends AppCompatActivity {
                 resetAllProgress();
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void addWord(){
         Intent intent = new Intent(this, AddNewWordActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void deleteWord(View view) {
@@ -186,5 +198,11 @@ public class NewCreateActivity extends AppCompatActivity {
         setRecyclerView();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
 }

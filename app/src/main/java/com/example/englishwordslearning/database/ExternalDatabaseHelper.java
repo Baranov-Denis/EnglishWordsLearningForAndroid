@@ -33,6 +33,9 @@ public class ExternalDatabaseHelper extends SQLiteOpenHelper {
      */
     private static final String TAG = "External_log -> ";
     private static final int DB_VERSION = 1;
+    /**
+    DB_NAME это имя файла который лежит в assets
+     */
     private static final String DB_NAME = "super.db";
     private static String DB_PATH = "";
     private final static String TABLE_NAME = "words";

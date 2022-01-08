@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EnglishWordsLearning">
         <activity
+            android:name=".ChooseTableNameActivity"
+            android:exported="true" />
+        <activity
             android:name=".AddNewWordActivity"
             android:exported="true" />
         <activity

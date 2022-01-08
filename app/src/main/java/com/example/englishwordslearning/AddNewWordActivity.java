@@ -1,6 +1,8 @@
 package com.example.englishwordslearning;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +22,8 @@ public class AddNewWordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_word);
         mainInterface = MainInterface.getMainInterface(this);
         setButtons();
+
+
 
     }
 
@@ -48,10 +52,19 @@ public class AddNewWordActivity extends AppCompatActivity {
 
     }
 
+
+
+
     private void goToBack() {
         Intent intent = new Intent(this, NewCreateActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        goToBack();
+    }
 }
