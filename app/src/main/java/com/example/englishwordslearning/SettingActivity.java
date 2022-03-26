@@ -71,7 +71,8 @@ public class SettingActivity extends AppCompatActivity {
         TextView wordsCountView = findViewById(R.id.count_of_all_words);
         mainInterface.updateWordsDictionary();
         int allWordsInt = mainInterface.getNumberOfAllWords();
-        wordsCountView.setText(Integer.toString(allWordsInt));
+        int learnedWords = allWordsInt - mainInterface.getNumberOfUnlearnedWords();
+        wordsCountView.setText(learnedWords + " / "+ allWordsInt);
     }
 
 
@@ -114,8 +115,7 @@ public class SettingActivity extends AppCompatActivity {
     private void setSeekBar() {
         int countOfRepeatWord = mainInterface.getCountOfRepeatWord();
         int countOfCurrentLearnWords = mainInterface.getTheNumberOfWordsBeingStudied();
-        Log.i("fgdffh   "  , mainInterface.getTheNumberOfWordsBeingStudied() + " 1");
-Log.i("fgdffh   "  , countOfCurrentLearnWords + " 2");
+
        // int countOfRepeatWord = 10;
        // int countOfCurrentLearnWords = 10;
 

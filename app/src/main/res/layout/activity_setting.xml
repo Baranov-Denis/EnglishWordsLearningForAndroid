@@ -295,7 +295,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
                     android:textSize="16sp"
-                    android:text="Количество слов в выбраном словаре :"
+                    android:text="@string/count_of_learned_words_in_current_dictionary"
                     android:textColor="@color/black" />
 
             <TextView

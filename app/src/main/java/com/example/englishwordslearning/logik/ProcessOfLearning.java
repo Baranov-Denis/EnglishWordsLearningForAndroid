@@ -3,10 +3,6 @@ package com.example.englishwordslearning.logik;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -15,9 +11,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.example.englishwordslearning.R;
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
@@ -31,6 +24,12 @@ public class ProcessOfLearning {
     private WordsDataBaseHelper wordsDataBaseHelper;
     private SQLiteDatabase wordsDatabase;
 
+
+    /**
+     * Переменная отслеживающая окончание слов в общем словаре
+     */
+    private boolean endingWords = false;
+
     private static final String TAG = " ->> learning";
 
     /**
@@ -43,6 +42,12 @@ public class ProcessOfLearning {
      * Переменная для выбора имени таблицы currentTableName из массива
      */
     private static int currentTableNum;
+
+
+    /**
+     * Переменная для отключения подсветки правильного ответа на кнопке
+     */
+    public static boolean withHighLight;
 
     public static int getCurrentTableNum() {
         return currentTableNum;
@@ -94,7 +99,15 @@ public class ProcessOfLearning {
         return allOfWordsOfDictionary.size();
     }
 
+
+    /**
+     * Количество невыученных слов
+     */
     private int numberOfUnlearnedWords;
+
+    public int getNumberOfUnlearnedWords() {
+        return numberOfUnlearnedWords;
+    }
 
     /**
      * ArrayList в котором содержатся слова, которые изучаются в настоящее время
@@ -161,6 +174,12 @@ public class ProcessOfLearning {
             reWriteWordDataBaseAfterChangingRepeat(countOfRepeatWord);
         }
         this.countOfRepeatWord = countOfRepeatWord;
+
+        if (countOfRepeatWord == 0) {
+            withHighLight = false;
+        } else {
+            withHighLight = true;
+        }
     }
 
 
@@ -172,7 +191,7 @@ public class ProcessOfLearning {
      */
     private void reWriteWordDataBaseAfterChangingRepeat(int newCount) {
 
-        Log.i(TAG,Integer.toString(allOfWordsOfDictionary.size()));
+        Log.i(TAG, Integer.toString(allOfWordsOfDictionary.size()));
         for (WordCard wordCard : allOfWordsOfDictionary) {
             if (wordCard.getRightAnswerCount() < newCount) {
                 if (wordCard.isLearned() > 0) {
@@ -210,6 +229,11 @@ public class ProcessOfLearning {
         wordsDataBaseHelper = WordsDataBaseHelper.getWordsDataBaseHelper(context);
         wordsDatabase = wordsDataBaseHelper.getReadableDatabase();
         currentTableName = WordsDataBaseHelper.getTableNamesList().get(currentTableNum);
+        if (countOfRepeatWord == 0) {
+            withHighLight = false;
+        } else {
+            withHighLight = true;
+        }
         //    allOfWordsOfDictionary = loadWordsDictionary();
 
 
@@ -231,10 +255,10 @@ public class ProcessOfLearning {
         numberOfUnlearnedWords = 0;
 
 
-        Log.i(TAG,currentTableName + "  " );
+        Log.i(TAG, currentTableName + "  ");
 
 
-        Cursor wordCursor = wordsDatabase.query(currentTableName, null, null, null, null, null,"ENGLISH_WORD");
+        Cursor wordCursor = wordsDatabase.query(currentTableName, null, null, null, null, null, "ENGLISH_WORD");
         while (wordCursor.moveToNext()) {
             if (wordCursor.getInt(6) == 0) numberOfUnlearnedWords++;
             tempWordCard = new WordCard(wordCursor.getInt(0), wordCursor.getString(1).trim(), wordCursor.getString(2).trim(), wordCursor.getInt(3), wordCursor.getInt(4), wordCursor.getInt(5), wordCursor.getInt(6));
@@ -328,8 +352,7 @@ public class ProcessOfLearning {
         ArrayList<WordCard> tempLearnList = new ArrayList<>();
         //Случайная карточка для добавления новой карточки в список
         WordCard randomCard;
-        //Переменная отслеживающая окончание слов в общем словаре
-        boolean endingWords = false;
+
 
         //Перебираем общий словарь
         //Добавляем во временный словарь слова которые отмечены как сейчас изучаемые
@@ -346,14 +369,14 @@ public class ProcessOfLearning {
             randomCard = getRandomWordCardFromMainDictionary();
 
             if (numberOfUnlearnedWords > countOfCurrentLearnWords) {
-
+                endingWords = false;
                 if (randomCard.nowLearning() == 0 && !tempLearnList.contains(randomCard) && randomCard.isLearned() == 0) {
                     //Присваиваем карточке слова отметку о том, что оно изучается в настоящее время
                     randomCard.setNowLearning(1);
                     //Перезаписываем данные о карточке в базе данных
                     wordsDataBaseHelper.changeExistsWord(randomCard);
                     tempLearnList.add(randomCard);
-                  //  numberOfUnlearnedWords--;
+                    //  numberOfUnlearnedWords--;
                 }
 
             } else {
@@ -365,7 +388,7 @@ public class ProcessOfLearning {
                     //Перезаписываем данные о карточке в базе данных
                     wordsDataBaseHelper.changeExistsWord(randomCard);
                     tempLearnList.add(randomCard);
-                  //  numberOfUnlearnedWords--;
+                    //  numberOfUnlearnedWords--;
                 }
             }
         }
@@ -405,7 +428,9 @@ public class ProcessOfLearning {
             targetWord.setText(wordThatNeedsToBeTranslated.getEnglishWord());
         }
 
+        if(wordThatNeedsToBeTranslated.getRightAnswerCount() >= 0)
         targetWordCount.setText(wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1));
+        else targetWordCount.setText("0/" + (countOfRepeatWord + 1));
 
     }
 
@@ -429,7 +454,7 @@ public class ProcessOfLearning {
     public void createButtons(View view, Context context) {
 
         buttons = getButtons(view);
-
+        final Animation wrongAnim = AnimationUtils.loadAnimation(mainContext, R.anim.wrong_answer_animation_button);
         final Animation alfa = AnimationUtils.loadAnimation(mainContext, R.anim.faf);
 
         //allOfWordsOfDictionary = loadWordsDictionary();
@@ -476,14 +501,26 @@ public class ProcessOfLearning {
 
 
             if (!answeredTrue) {
-
-
                 myButton.setBackground(context.getResources().getDrawable(R.drawable.wrong_button_background));
             }
-            if (tempWordCardForButton.getEnglishWord().equals(wordThatNeedsToBeTranslated.getEnglishWord()) && tempWordCardForButton.getRightAnswerCount() == 0) {
-                final Animation wrongAnim = AnimationUtils.loadAnimation(mainContext, R.anim.wrong_answer_animation_button);
-                myButton.startAnimation(wrongAnim);
-                myButton.setBackground(context.getResources().getDrawable(R.drawable.right_button_for_learn_background));
+
+            if (tempWordCardForButton.getEnglishWord().equals(wordThatNeedsToBeTranslated.getEnglishWord()) && tempWordCardForButton.getRightAnswerCount() < 1) {
+
+
+                if (withHighLight) {
+                    myButton.setBackground(context.getResources().getDrawable(R.drawable.right_button_for_learn_background));
+                    myButton.startAnimation(wrongAnim);
+                }
+
+                if (!withHighLight) {
+                    myButton.setBackground(context.getResources().getDrawable(R.drawable.button_for_learn_background));
+                }
+
+                if (!answeredTrue) {
+                    myButton.startAnimation(wrongAnim);
+                    myButton.setBackground(context.getResources().getDrawable(R.drawable.right_button_for_learn_background));
+                }
+
             }
 
 
@@ -543,6 +580,7 @@ public class ProcessOfLearning {
 
                 button.startAnimation(animAlpha);
                 button.setBackground(context.getResources().getDrawable(R.drawable.right_button_for_learn_background));
+                //button.setBackground(context.getResources().getDrawable(android.R.color.holo_blue_dark));
                 //TODO
                 updateWordsDictionary();
                 new Handler().postDelayed(new Runnable() {
@@ -590,7 +628,7 @@ public class ProcessOfLearning {
 
 
     private void reactionToTheWrongAnswer(WordCard wrongWordCard, View view, Context context) {
-        wrongWordCard.setRightAnswerCount(0);
+        wrongWordCard.setRightAnswerCount(-1);
         wrongWordCard.setWrongAnswerCount(wrongWordCard.getWrongAnswerCount() + 1);
         wordsDataBaseHelper.changeExistsWord(wrongWordCard);
         reWriteWordCardInArrayList(allOfWordsOfDictionary, wrongWordCard);
@@ -610,7 +648,26 @@ public class ProcessOfLearning {
      * @return
      */
     public WordCard getWordForLearn(ArrayList<WordCard> learningWordsForButtons) {
+        boolean run = true;
         int random = (int) (Math.random() * learningWordsForButtons.size());
+        WordCard tempWordCard = learningWordsForButtons.get(random);
+        if (!endingWords) {
+            return tempWordCard;
+        } else {
+            while (run) {
+
+
+
+                if (tempWordCard.getRightAnswerCount() < countOfRepeatWord + 1 || getNumberOfUnlearnedWords() <= 2) {
+                    return tempWordCard;
+                }
+
+                random = (int) (Math.random() * learningWordsForButtons.size());
+                tempWordCard = learningWordsForButtons.get(random);
+            }
+        }
+
+
         return learningWordsForButtons.get(random);
     }
 

@@ -156,4 +156,8 @@ public class MainInterface {
     public ArrayList<WordCard> getAllWordsFromCurrentDictionary(){
         return processOfLearning.getAllOfWordsOfDictionary();
     }
+
+    public int getNumberOfUnlearnedWords(){
+        return processOfLearning.getNumberOfUnlearnedWords();
+    }
 }
