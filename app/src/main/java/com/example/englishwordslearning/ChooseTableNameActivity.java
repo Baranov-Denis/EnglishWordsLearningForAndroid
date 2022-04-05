@@ -38,9 +38,7 @@ public class ChooseTableNameActivity extends AppCompatActivity {
     private void setRecyclerView() {
         RecyclerView wordsRecycler = findViewById(R.id.table_names_recycler);
         //  allWordsFromCurrentDictionary = mainInterface.getAllWordsFromCurrentDictionary();
-tableNames = WordsDataBaseHelper.getTableNamesList().toArray(new String[0]);
-
-
+        tableNames = WordsDataBaseHelper.getTableNamesList().toArray(new String[0]);
 
 
         RecyclerAdapterForTableNames adapter = new RecyclerAdapterForTableNames(tableNames);
@@ -58,14 +56,14 @@ tableNames = WordsDataBaseHelper.getTableNamesList().toArray(new String[0]);
 
     }
 
-    private void setButton(){
+    private void setButton() {
         Button okButton = findViewById(R.id.button_for_choose_table);
         okButton.setOnClickListener(view -> {
             ProcessOfLearning.setCurrentTableNum(selectedItem);
 
             mainInterface.updateWordsDictionary();
 
-            int dictionarySize =   mainInterface.getNumberOfAllWords();
+            int dictionarySize = mainInterface.getNumberOfAllWords();
 
             int countOfCurrentLearnWords = mainInterface.getTheNumberOfWordsBeingStudied();
 

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.example.englishwordslearning.database.WordsDataBaseHelper;
 import com.example.englishwordslearning.logik.MainInterface;
 import com.example.englishwordslearning.logik.ProcessOfLearning;
+import com.example.englishwordslearning.logik.WriterDictionaryToTxt;
 
 public class SettingActivity extends AppCompatActivity {
     private MainInterface mainInterface;
@@ -30,7 +31,7 @@ public class SettingActivity extends AppCompatActivity {
     LinearLayout setCountOfWords;
     LinearLayout setTypeOfLearningSpinner;
     Button setTableButton;
-  //  LinearLayout setTable;
+    Button saveDictionaryToTxt;
     SeekBar seekBarOfRepeat;
     SeekBar seekBarOfNumber;
     TextView textViewOfNumber;
@@ -61,7 +62,7 @@ public class SettingActivity extends AppCompatActivity {
         setModeSpinner();
     // setTableSpinner();
         showWordsCount();
-
+setButtonsSaveAndRead();
         startChoosing();
 
     }
@@ -198,6 +199,14 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setButtonsSaveAndRead(){
+        saveDictionaryToTxt = findViewById(R.id.save_to_txt);
+
+        saveDictionaryToTxt.setOnClickListener(e ->{
+           WriterDictionaryToTxt.getWriter(this).writeToTxt();
+        });
     }
 
 /*

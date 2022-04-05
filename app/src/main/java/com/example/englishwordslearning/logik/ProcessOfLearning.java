@@ -59,6 +59,9 @@ public class ProcessOfLearning {
         currentTableName = WordsDataBaseHelper.getTableNamesList().get(currentTableNum);
     }
 
+    /**
+     * Текущее имя словаря
+     */
     public static String currentTableName;
 
     public String getCurrentTableName() {
@@ -92,6 +95,7 @@ public class ProcessOfLearning {
     private ArrayList<WordCard> allOfWordsOfDictionary;
 
     public ArrayList<WordCard> getAllOfWordsOfDictionary() {
+        allOfWordsOfDictionary = loadWordsDictionary();
         return allOfWordsOfDictionary;
     }
 
@@ -428,8 +432,8 @@ public class ProcessOfLearning {
             targetWord.setText(wordThatNeedsToBeTranslated.getEnglishWord());
         }
 
-        if(wordThatNeedsToBeTranslated.getRightAnswerCount() >= 0)
-        targetWordCount.setText(wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1));
+        if (wordThatNeedsToBeTranslated.getRightAnswerCount() >= 0)
+            targetWordCount.setText(wordThatNeedsToBeTranslated.getRightAnswerCount() + "/" + (countOfRepeatWord + 1));
         else targetWordCount.setText("0/" + (countOfRepeatWord + 1));
 
     }
@@ -655,7 +659,6 @@ public class ProcessOfLearning {
             return tempWordCard;
         } else {
             while (run) {
-
 
 
                 if (tempWordCard.getRightAnswerCount() < countOfRepeatWord + 1 || getNumberOfUnlearnedWords() <= 2) {

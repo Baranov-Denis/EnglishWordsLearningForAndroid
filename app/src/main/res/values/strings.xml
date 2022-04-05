@@ -20,6 +20,8 @@
     <string name="press_one_more_time">Для выхода нажмите ещё раз.</string>
     <string name="count_of_learned_words_in_current_dictionary">Выучено слов в текущем словаре :</string>
     <string name="text">Текст</string>
+    <string name="load_from_txt">Загрузить из txt</string>
+    <string name="save_to_txt">Сохранить в txt</string>
 
     <string-array name="typesOfLearn">
         <item>Русский - Английский</item>
