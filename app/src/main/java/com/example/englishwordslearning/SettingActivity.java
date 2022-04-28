@@ -123,7 +123,7 @@ setButtonsSaveAndRead();
         seekBarOfRepeat = findViewById(R.id.seek_bar_for_count_of_repeat_words);
         seekBarOfRepeat.setProgress(countOfRepeatWord);
         TextView textViewOfRepeat = findViewById(R.id.count_of_repeat_int);
-        textViewOfRepeat.setText(String.valueOf(++countOfRepeatWord));
+        textViewOfRepeat.setText(String.valueOf(countOfRepeatWord));
 
         seekBarOfNumber = findViewById(R.id.seek_bar_count_of_current_learn_words);
         seekBarOfNumber.setProgress(countOfCurrentLearnWords);
@@ -134,8 +134,8 @@ setButtonsSaveAndRead();
         seekBarOfRepeat.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int count, boolean b) {
-                mainInterface.setCountOfRepeatWord(count);
-                textViewOfRepeat.setText(String.valueOf(++count));
+                mainInterface.setCountOfRepeatWord(count + 1);
+                textViewOfRepeat.setText(String.valueOf(count +1 ));
                 saveSettings();
             }
 

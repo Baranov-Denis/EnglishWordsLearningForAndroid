@@ -157,9 +157,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startLearningActivity(View view) {
-        Intent intent = new Intent(this, LearnActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        //int countOfRepeat = mainInterface.getCountOfRepeatWord();
+        int countOfWords = mainInterface.getNumberOfAllWords();
+        if(countOfWords > 10) {
+            Intent intent = new Intent(this, LearnActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        }else {
+            Toast toast = Toast.makeText(this, "Недостаточно слов для изучения!!!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
 

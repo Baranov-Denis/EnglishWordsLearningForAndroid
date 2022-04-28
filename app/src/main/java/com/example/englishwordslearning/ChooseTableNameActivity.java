@@ -37,8 +37,8 @@ public class ChooseTableNameActivity extends AppCompatActivity {
 
     private void setRecyclerView() {
         RecyclerView wordsRecycler = findViewById(R.id.table_names_recycler);
-        //  allWordsFromCurrentDictionary = mainInterface.getAllWordsFromCurrentDictionary();
         tableNames = WordsDataBaseHelper.getTableNamesList().toArray(new String[0]);
+
 
 
         RecyclerAdapterForTableNames adapter = new RecyclerAdapterForTableNames(tableNames);
@@ -67,8 +67,10 @@ public class ChooseTableNameActivity extends AppCompatActivity {
 
             int countOfCurrentLearnWords = mainInterface.getTheNumberOfWordsBeingStudied();
 
-            if (dictionarySize < countOfCurrentLearnWords) {
-                mainInterface.setNumberOfCurrentLearnWords(dictionarySize);
+            if (dictionarySize < countOfCurrentLearnWords || countOfCurrentLearnWords < 10) {
+                mainInterface.setNumberOfCurrentLearnWords(10);
+                Toast toast = Toast.makeText(getApplicationContext(), "Слишком мало слов в словаре!!!!", Toast.LENGTH_SHORT);
+                toast.show();
             }
             saveSettings();
             goToBack();

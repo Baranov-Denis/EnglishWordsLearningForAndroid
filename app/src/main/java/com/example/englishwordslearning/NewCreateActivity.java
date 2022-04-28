@@ -65,7 +65,7 @@ public class NewCreateActivity extends AppCompatActivity {
             engWords[i] = allWordsFromCurrentDictionary.get(i).getEnglishWord();
             rusWords[i] = allWordsFromCurrentDictionary.get(i).getRussianWord();
             if(allWordsFromCurrentDictionary.get(i).getRightAnswerCount()>0) {
-                stat[i] = allWordsFromCurrentDictionary.get(i).getRightAnswerCount() + "/" + (mainInterface.getCountOfRepeatWord() + 1);
+                stat[i] = allWordsFromCurrentDictionary.get(i).getRightAnswerCount() + "/" + (mainInterface.getCountOfRepeatWord());
             }else {
                // stat[i] = "✔";
                 stat[i] = "-";

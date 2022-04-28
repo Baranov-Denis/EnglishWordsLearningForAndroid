@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.englishwordslearning.logik.Constants;
 import com.example.englishwordslearning.logik.ProcessOfLearning;
 import com.example.englishwordslearning.logik.WordCard;
 
@@ -25,17 +26,18 @@ import java.util.regex.Pattern;
 public class WordsDataBaseHelper extends SQLiteOpenHelper {
 
 
-    private final static String TAG = "--->>>   ";
+    private final static String TAG = "WordsDataBaseHelper ";
     /**
-     * Нужно менять DB_VERSION при загрузке новой внешней базы данных
+     * Нужно менять DB_VERSION при загрузке новой внешней базы данных расположена в Constants
      */
-    private static final int DB_VERSION = 8;
+    private static final int DB_VERSION = Constants.DB_VERSION_FOR_UPDATE;
+   // private static final int DB_VERSION = 1;
 
     private final Context mContext;
 
     private static final String DB_NAME = "MAIN_DATABASE";
 
-   // private static String TABLE_NAME = "MAIN_TABLE_DATABASE";
+    // private static String TABLE_NAME = "MAIN_TABLE_DATABASE";
 
     private static ArrayList<String> tableNamesList;
 
@@ -51,9 +53,9 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
     private static WordsDataBaseHelper wordsDataBaseHelper;
 
 
-   // public static String getTableName() {
-   //     return TABLE_NAME;
-  //  }
+    // public static String getTableName() {
+    //     return TABLE_NAME;
+    //  }
 
     public static SQLiteDatabase getMainDataBase() {
         return mainDataBase;
@@ -95,7 +97,7 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
     private void createTableNamesList() {
         externalDatabaseHelper = new ExternalDatabaseHelper(mContext);
         externalDatabase = externalDatabaseHelper.getExternalDatabase();
-        Cursor namesCursor = externalDatabase.query("sqlite_sequence", new String[]{"name"}, null, null, null, null, null);
+        Cursor namesCursor = externalDatabase.query(Constants.LIST_OF_TABLES_NAMES, new String[]{Constants.COLUMN_WHERE_CONTAINS_TABLES_NAMES}, null, null, null, null, null);
         tableNamesList = new ArrayList<>();
         while (namesCursor.moveToNext()) {
             tableNamesList.add(namesCursor.getString(0));
@@ -105,18 +107,20 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        Log.i(TAG,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         createTableNamesList();
 
         for (int i = 0; i < tableNamesList.size(); i++) {
 
             String tableName = tableNamesList.get(i);
 
+            Log.i(TAG, i + "  " + tableName);
+
             createDB(db, tableName);
         }
 
         insertExternalDatabase(db);
-
+        //ProcessOfLearning.setCurrentTableNum(1);
     }
 
     private void createDB(SQLiteDatabase db, String tableName) {
@@ -138,31 +142,30 @@ public class WordsDataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase externalDatabase = externalDatabaseHelper.getExternalDatabase();
 
 
-        Cursor namesCursor = externalDatabase.query("sqlite_sequence", new String[]{"name"}, null, null, null, null, null);
+        Cursor namesCursor = externalDatabase.query(Constants.LIST_OF_TABLES_NAMES, new String[]{Constants.COLUMN_WHERE_CONTAINS_TABLES_NAMES}, null, null, null, null, null);
         tableNamesList = new ArrayList<>();
         while (namesCursor.moveToNext()) {
             tableNamesList.add(namesCursor.getString(0));
-        try {
-            createDB(db, namesCursor.getString(0));
-            Log.i(TAG,namesCursor.getString(0) + " table created");
-        }catch (Exception e){
-Log.i(TAG,"table already exists");
-        }
+            try {
+                createDB(db, namesCursor.getString(0));
+                Log.i(TAG, namesCursor.getString(0) + " table created");
+            } catch (Exception e) {
+                Log.i(TAG, namesCursor.getString(0) + " table already exists");
+            }
 
 
         }
-
-
 
 
         for (int i = 0; i < tableNamesList.size(); i++) {
+            if(!tableNamesList.get(i).equals(Constants.LIST_OF_TABLES_NAMES)){
             Cursor wordCursor = externalDatabase.query(tableNamesList.get(i), new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD", "RIGHT_ANSWER_COUNT", "WRONG_ANSWER_STAT", "NOW_LEARNING", "IS_LEARNED"}, null, null, null, null, "ENGLISH_WORD");
             while (wordCursor.moveToNext()) {
                 englishWord = wordCursor.getString(1).toLowerCase();
                 russianWord = wordCursor.getString(2).toLowerCase();
                 insertWord(db, tableNamesList.get(i), englishWord, russianWord);
             }
-            wordCursor.close();
+            wordCursor.close();}
         }
     }
 
@@ -193,19 +196,19 @@ Log.i(TAG,"table already exists");
         }
     }
 
-  /*  private void insertWord(SQLiteDatabase db, String tableName, String englishWord, String russianWord, int rightAnswer, int wrongAnswer, int nowLearning, int isLearned) {
-        if (!testExistingWord(db, tableName, englishWord, russianWord)) {
-            ContentValues wordValue = new ContentValues();
-            wordValue.put("ENGLISH_WORD", englishWord);
-            wordValue.put("RUSSIAN_WORD", russianWord);
-            wordValue.put("RIGHT_ANSWER_COUNT", rightAnswer);
-            wordValue.put("WRONG_ANSWER_STAT", wrongAnswer);
-            wordValue.put("NOW_LEARNING", nowLearning);
-            wordValue.put("IS_LEARNED", isLearned);
-            db.insert(tableName, null, wordValue);
-        }
-    }
-*/
+    /*  private void insertWord(SQLiteDatabase db, String tableName, String englishWord, String russianWord, int rightAnswer, int wrongAnswer, int nowLearning, int isLearned) {
+          if (!testExistingWord(db, tableName, englishWord, russianWord)) {
+              ContentValues wordValue = new ContentValues();
+              wordValue.put("ENGLISH_WORD", englishWord);
+              wordValue.put("RUSSIAN_WORD", russianWord);
+              wordValue.put("RIGHT_ANSWER_COUNT", rightAnswer);
+              wordValue.put("WRONG_ANSWER_STAT", wrongAnswer);
+              wordValue.put("NOW_LEARNING", nowLearning);
+              wordValue.put("IS_LEARNED", isLearned);
+              db.insert(tableName, null, wordValue);
+          }
+      }
+  */
     private void changeWord(SQLiteDatabase db, String tableName, String englishWord, String russianWord, int rightAnswerCount, int wrongAnswerStat, int nowLearning, int isLearned) {
         ContentValues wordValue = new ContentValues();
         wordValue.put("ENGLISH_WORD", englishWord);
@@ -327,10 +330,10 @@ Log.i(TAG,"table already exists");
         String deletingWord = "";
 
         Cursor cursor = mainDataBase.query(tableName, new String[]{"_id", "ENGLISH_WORD", "RUSSIAN_WORD"}, "_id = ?", new String[]{Long.toString(id)}, null, null, null);
-        Log.i("---> " , Long.toString(id) + "   " );
+        Log.i("---> ", Long.toString(id) + "   ");
         if (cursor.moveToNext()) {
             deletingWord = cursor.getString(1);
-            Log.i("---> " , deletingWord);
+            Log.i("---> ", deletingWord);
         }
         cursor.close();
         deleteWord(mainDataBase, tableName, id);

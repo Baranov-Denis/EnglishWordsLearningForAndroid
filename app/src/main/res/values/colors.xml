@@ -13,4 +13,5 @@
     <color name="yellow">#FEC007</color>
     <color name="yellow_dark">#DAA609</color>
     <color name="yellow_more_dark">#DA7C09</color>
+    <color name="yellow_text_dark">#5E3402</color>
 </resources>

@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
+import com.example.englishwordslearning.logik.Constants;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,15 +38,20 @@ public class ExternalDatabaseHelper extends SQLiteOpenHelper {
     /**
     DB_NAME это имя файла который лежит в assets
      */
-    private static final String DB_NAME = "super.db";
+
+
+
+    //TODO
+   // private static final String DB_NAME = "super.db";
+    private static final String DB_NAME = Constants.EXTERNAL_DATABASE_NAME;
     private static String DB_PATH = "";
-    private final static String TABLE_NAME = "words";
+   // private final static String TABLE_NAME = "words";
     private final Context context;
     private SQLiteDatabase externalDatabase;
 
-    public static String getTableName() {
-        return TABLE_NAME;
-    }
+  //  public static String getTableName() {
+  //      return TABLE_NAME;
+  //  }
 
     public SQLiteDatabase getExternalDatabase() {
         return externalDatabase;
@@ -115,7 +122,6 @@ public class ExternalDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void updateDataBase() throws IOException {
-        Log.i(TAG, "sssssssssssssssssssssssssssssssssssssss");
         File dbFile = new File(DB_PATH + DB_NAME);
         if (dbFile.exists())
             dbFile.delete();
